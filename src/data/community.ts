@@ -7,6 +7,12 @@ export const siteConfig = {
     id: "Tempat ngobrol, mabar, belajar, dan tumbuh bareng.",
     en: "A place to connect, play, learn, and grow together."
   },
+  socials: {
+    discord: process.env.NEXT_PUBLIC_DISCORD_INVITE_URL || "",
+    instagram: "",
+    youtube: "",
+    tiktok: ""
+  },
   statsFallback: {
     members: 1200,
     online: 128,
@@ -78,14 +84,34 @@ export const pillars = [
   }
 ] as const;
 
-export const teamMembers = [
+export type TeamMemberLink = { label: string; url: string };
+
+export type TeamMember = {
+  name: string;
+  role: string;
+  city: string;
+  accent: "red" | "blue";
+  imageUrl?: string | null;
+  links?: TeamMemberLink[];
+};
+
+export const teamMembers: TeamMember[] = [
   { name: "Squeezy", role: "Founder", city: "Indonesia", accent: "red" },
   { name: "Aksa", role: "Community Lead", city: "Jakarta", accent: "blue" },
   { name: "Naya", role: "Event Curator", city: "Bandung", accent: "red" },
   { name: "Raka", role: "Tech & Ops", city: "Surabaya", accent: "blue" }
 ];
 
-export const events = {
+export type LandingEvent = {
+  date: string;
+  title: string;
+  tag: string;
+  description: string;
+  location?: string | null;
+  imageUrl?: string | null;
+};
+
+export const events: { upcoming: LandingEvent[]; past: LandingEvent[] } = {
   upcoming: [
     {
       date: "18 Jun 2026",
@@ -122,7 +148,9 @@ export const events = {
   ]
 };
 
-export const gallery = [
+export type GalleryItem = { title: string; caption: string; imageUrl?: string | null };
+
+export const gallery: GalleryItem[] = [
   { title: "Game Night", caption: "Lobby penuh, suara rame, momen menang bareng." },
   { title: "Study Circle", caption: "Belajar bareng tanpa gaya sok paling pintar." },
   { title: "Music Room", caption: "Playlist member jadi soundtrack malam komunitas." },
@@ -156,7 +184,15 @@ export const faqs = [
 
 export const roadmap = ["Member showcase", "Game stats hub", "Merch/store", "Blog komunitas", "Public event RSVP"];
 
-export const memberShowcase = [
+export type ShowcaseMember = {
+  name: string;
+  role: string;
+  game: string;
+  quote: string;
+  imageUrl?: string | null;
+};
+
+export const memberShowcase: ShowcaseMember[] = [
   { name: "Rin", role: "Mabar Captain", game: "Valorant", quote: "Datang buat mabar, pulang bawa circle." },
   { name: "Fai", role: "Creative Member", game: "Design", quote: "Reverse jadi tempat lempar karya tanpa takut di-judge." },
   { name: "Zen", role: "Learning Buddy", game: "Web Dev", quote: "Kalau stuck, selalu ada yang bantu debug bareng." }
@@ -168,7 +204,14 @@ export const gameStats = [
   { label: "Mini Tournaments", value: "4", description: "Format kecil, fun-first, tetap kompetitif secukupnya." }
 ];
 
-export const merchProducts = [
+export type MerchProduct = {
+  name: string;
+  price: string;
+  status: string;
+  imageUrl?: string | null;
+};
+
+export const merchProducts: MerchProduct[] = [
   { name: "Reverse Tee — Signal Black", price: "Coming soon", status: "Concept" },
   { name: "Reverse Sticker Pack", price: "Coming soon", status: "Concept" },
   { name: "Community Lanyard", price: "Coming soon", status: "Concept" }

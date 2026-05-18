@@ -55,6 +55,50 @@ function text(value: unknown, fallback: string) {
   return typeof value === "string" && value.trim() ? value : fallback;
 }
 
+function optionalText(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value : undefined;
+}
+
+function mediaUrl(value: unknown): string | undefined {
+  if (!value) return undefined;
+  if (typeof value === "string") return value;
+
+  if (typeof value === "object" && value !== null) {
+    const doc = value as CmsDoc;
+    const direct = optionalText(doc.url);
+    if (direct) return direct;
+
+    const sizes = doc.sizes as Record<string, CmsDoc> | undefined;
+    if (sizes && typeof sizes === "object") {
+      for (const variant of Object.values(sizes)) {
+        const url = optionalText(variant?.url);
+        if (url) return url;
+      }
+    }
+
+    const filename = optionalText(doc.filename);
+    if (filename) return `/api/media/file/${filename}`;
+  }
+
+  return undefined;
+}
+
+function teamLinks(value: unknown) {
+  if (!Array.isArray(value)) return undefined;
+  const cleaned = value
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const doc = entry as CmsDoc;
+      const label = optionalText(doc.label);
+      const url = optionalText(doc.url);
+      if (!label || !url) return null;
+      return { label, url };
+    })
+    .filter((entry): entry is { label: string; url: string } => entry !== null);
+
+  return cleaned.length ? cleaned : undefined;
+}
+
 function logCmsFallback(scope: string, error: unknown) {
   const detail = error instanceof Error ? error.message : "Unknown CMS error";
   console.warn(`[content] Failed to load ${scope} from CMS; using fallback.`, detail);
@@ -84,23 +128,32 @@ async function loadLandingContentFromCms(): Promise<LandingContent> {
   const payload = await getPayload({ config });
   const [settings, team, cmsEvents, highlights, members, stats, products] = await Promise.all([
     payload.findGlobal({ slug: "site-settings", depth: 1 }),
-    payload.find({ collection: "team-members", limit: 40, sort: "sortOrder" }),
-    payload.find({ collection: "events", limit: 40, sort: "startsAt" }),
-    payload.find({ collection: "highlights", limit: 12, sort: "sortOrder" }),
-    payload.find({ collection: "members", limit: 12, sort: "sortOrder" }),
+    payload.find({ collection: "team-members", limit: 40, sort: "sortOrder", depth: 2 }),
+    payload.find({ collection: "events", limit: 40, sort: "startsAt", depth: 2 }),
+    payload.find({ collection: "highlights", limit: 12, sort: "sortOrder", depth: 2 }),
+    payload.find({ collection: "members", limit: 12, sort: "sortOrder", depth: 2 }),
     payload.find({ collection: "game-stats", limit: 12, sort: "sortOrder" }),
-    payload.find({ collection: "products", limit: 12, sort: "sortOrder" })
+    payload.find({ collection: "products", limit: 12, sort: "sortOrder", depth: 2 })
   ]);
 
   const settingsDoc = settings as CmsDoc;
+  const fallbackInvite = fallbackContent.siteConfig.inviteUrl;
+  const discordInvite = optionalText(settingsDoc.discordInviteUrl) ?? fallbackInvite;
 
   return {
     ...fallbackContent,
     siteConfig: {
       ...fallbackContent.siteConfig,
+      inviteUrl: discordInvite,
       tagline: {
         id: text(settingsDoc.taglineId, fallbackContent.siteConfig.tagline.id),
         en: text(settingsDoc.taglineEn, fallbackContent.siteConfig.tagline.en)
+      },
+      socials: {
+        discord: discordInvite || "",
+        instagram: optionalText(settingsDoc.instagramUrl) ?? "",
+        youtube: optionalText(settingsDoc.youtubeUrl) ?? "",
+        tiktok: optionalText(settingsDoc.tiktokUrl) ?? ""
       }
     },
     aboutContent: {
@@ -108,34 +161,90 @@ async function loadLandingContentFromCms(): Promise<LandingContent> {
       body: text(settingsDoc.aboutBody, fallbackContent.aboutContent.body)
     },
     teamMembers: team.docs.length
-      ? team.docs.map((doc, index) => ({
-          name: text((doc as CmsDoc).name, "Member"),
-          role: text((doc as CmsDoc).role, "Team"),
-          city: text((doc as CmsDoc).city, "Indonesia"),
-          accent: index % 2 === 0 ? "red" : "blue"
-        }))
+      ? team.docs.map((doc, index) => {
+          const cmsDoc = doc as CmsDoc;
+          return {
+            name: text(cmsDoc.name, "Member"),
+            role: text(cmsDoc.role, "Team"),
+            city: text(cmsDoc.city, "Indonesia"),
+            accent: (index % 2 === 0 ? "red" : "blue") as "red" | "blue",
+            imageUrl: mediaUrl(cmsDoc.photo) ?? null,
+            links: teamLinks(cmsDoc.links)
+          };
+        })
       : fallbackContent.teamMembers,
     events: cmsEvents.docs.length
       ? {
           upcoming: cmsEvents.docs
             .filter((doc) => (doc as CmsDoc).status !== "past")
-            .map((doc) => ({ date: text((doc as CmsDoc).displayDate, "Soon"), title: text((doc as CmsDoc).title, "Reverse Event"), tag: text((doc as CmsDoc).tag, "Event"), description: text((doc as CmsDoc).description, "Event komunitas Reverse.") })),
+            .map((doc) => {
+              const cmsDoc = doc as CmsDoc;
+              return {
+                date: text(cmsDoc.displayDate, "Soon"),
+                title: text(cmsDoc.title, "Reverse Event"),
+                tag: text(cmsDoc.tag, "Event"),
+                description: text(cmsDoc.description, "Event komunitas Reverse."),
+                location: optionalText(cmsDoc.location) ?? null,
+                imageUrl: mediaUrl(cmsDoc.cover) ?? null
+              };
+            }),
           past: cmsEvents.docs
             .filter((doc) => (doc as CmsDoc).status === "past")
-            .map((doc) => ({ date: text((doc as CmsDoc).displayDate, "Past"), title: text((doc as CmsDoc).title, "Reverse Event"), tag: text((doc as CmsDoc).tag, "Event"), description: text((doc as CmsDoc).description, "Event komunitas Reverse.") }))
+            .map((doc) => {
+              const cmsDoc = doc as CmsDoc;
+              return {
+                date: text(cmsDoc.displayDate, "Past"),
+                title: text(cmsDoc.title, "Reverse Event"),
+                tag: text(cmsDoc.tag, "Event"),
+                description: text(cmsDoc.description, "Event komunitas Reverse."),
+                location: optionalText(cmsDoc.location) ?? null,
+                imageUrl: mediaUrl(cmsDoc.cover) ?? null
+              };
+            })
         }
       : fallbackContent.events,
     gallery: highlights.docs.length
-      ? highlights.docs.map((doc) => ({ title: text((doc as CmsDoc).title, "Highlight"), caption: text((doc as CmsDoc).caption, "Momen komunitas Reverse.") }))
+      ? highlights.docs.map((doc) => {
+          const cmsDoc = doc as CmsDoc;
+          return {
+            title: text(cmsDoc.title, "Highlight"),
+            caption: text(cmsDoc.caption, "Momen komunitas Reverse."),
+            imageUrl: mediaUrl(cmsDoc.image) ?? null
+          };
+        })
       : fallbackContent.gallery,
     memberShowcase: members.docs.length
-      ? members.docs.map((doc) => ({ name: text((doc as CmsDoc).name, "Member"), role: text((doc as CmsDoc).role, "Member"), game: text((doc as CmsDoc).favoriteGame, "Community"), quote: text((doc as CmsDoc).quote, "Proud member of Reverse.") }))
+      ? members.docs.map((doc) => {
+          const cmsDoc = doc as CmsDoc;
+          return {
+            name: text(cmsDoc.name, "Member"),
+            role: text(cmsDoc.role, "Member"),
+            game: text(cmsDoc.favoriteGame, "Community"),
+            quote: text(cmsDoc.quote, "Proud member of Reverse."),
+            imageUrl: mediaUrl(cmsDoc.avatar) ?? null
+          };
+        })
       : fallbackContent.memberShowcase,
     gameStats: stats.docs.length
-      ? stats.docs.map((doc) => ({ label: text((doc as CmsDoc).label, "Metric"), value: text((doc as CmsDoc).value, "0"), description: text((doc as CmsDoc).description, "Stat komunitas.") }))
+      ? stats.docs.map((doc) => {
+          const cmsDoc = doc as CmsDoc;
+          return {
+            label: text(cmsDoc.label, "Metric"),
+            value: text(cmsDoc.value, "0"),
+            description: text(cmsDoc.description, "Stat komunitas.")
+          };
+        })
       : fallbackContent.gameStats,
     merchProducts: products.docs.length
-      ? products.docs.map((doc) => ({ name: text((doc as CmsDoc).name, "Product"), price: text((doc as CmsDoc).price, "Coming soon"), status: text((doc as CmsDoc).status, "Concept") }))
+      ? products.docs.map((doc) => {
+          const cmsDoc = doc as CmsDoc;
+          return {
+            name: text(cmsDoc.name, "Product"),
+            price: text(cmsDoc.price, "Coming soon"),
+            status: text(cmsDoc.status, "Concept"),
+            imageUrl: mediaUrl(cmsDoc.image) ?? null
+          };
+        })
       : fallbackContent.merchProducts
   };
 }

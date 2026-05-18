@@ -27,6 +27,44 @@ const iconMap = {
 
 const bilingualLabel = "ID / EN";
 
+function EventCard({
+  event,
+  variant
+}: {
+  event: { date: string; title: string; tag: string; description: string; location?: string | null; imageUrl?: string | null };
+  variant: "upcoming" | "past";
+}) {
+  const tagAccent = variant === "upcoming" ? "bg-blue-reverse/15 text-blue-reverse" : "bg-white/10 text-white/80";
+  return (
+    <article className={`overflow-hidden rounded-2xl border border-white/10 bg-black/25 ${variant === "past" ? "opacity-85" : ""}`}>
+      {event.imageUrl ? (
+        <div className="relative aspect-[16/9] w-full">
+          <Image
+            src={event.imageUrl}
+            alt={event.title}
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+      ) : null}
+      <div className="p-5">
+        <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-white/75">
+          <span>{event.date}</span>
+          <span className={`rounded-full px-3 py-1 ${tagAccent}`}>{event.tag}</span>
+          {event.location ? (
+            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-white/70">
+              {event.location}
+            </span>
+          ) : null}
+        </div>
+        <h4 className="mt-4 text-xl font-black">{event.title}</h4>
+        <p className="mt-2 leading-7 text-white/75">{event.description}</p>
+      </div>
+    </article>
+  );
+}
+
 function SectionHeader({
   eyebrow,
   title,
@@ -322,20 +360,48 @@ export default async function Home() {
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {teamMembers.map((member) => (
             <article key={member.name} className="glass rounded-3xl p-5">
-              <div
-                className={
-                  member.accent === "red"
-                    ? "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-reverse/15 text-3xl font-black text-red-reverse"
-                    : "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-reverse/15 text-3xl font-black text-blue-reverse"
-                }
-              >
-                {member.name.slice(0, 1)}
-              </div>
+              {member.imageUrl ? (
+                <div className="relative mb-5 h-20 w-20 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
+                  <Image
+                    src={member.imageUrl}
+                    alt={member.name}
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={
+                    member.accent === "red"
+                      ? "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-reverse/15 text-3xl font-black text-red-reverse"
+                      : "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-reverse/15 text-3xl font-black text-blue-reverse"
+                  }
+                >
+                  {member.name.slice(0, 1)}
+                </div>
+              )}
               <h3 className="text-xl font-black">{member.name}</h3>
               <p className="mt-1 text-sm text-white/70">{member.role}</p>
               <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-white/65">
                 {member.city}
               </p>
+              {member.links && member.links.length > 0 ? (
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {member.links.map((link) => (
+                    <li key={`${member.name}-${link.url}`}>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:border-white/30 hover:text-ink"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </article>
           ))}
         </div>
@@ -355,21 +421,7 @@ export default async function Home() {
             <h3 className="mb-6 text-2xl font-black">Upcoming</h3>
             <div className="space-y-4">
               {events.upcoming.map((event) => (
-                <article
-                  key={event.title}
-                  className="rounded-2xl border border-white/10 bg-black/25 p-5"
-                >
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-white/70">
-                    <span>{event.date}</span>
-                    <span className="rounded-full bg-blue-reverse/15 px-3 py-1 text-blue-reverse">
-                      {event.tag}
-                    </span>
-                  </div>
-                  <h4 className="mt-4 text-xl font-black">{event.title}</h4>
-                  <p className="mt-2 leading-7 text-white/70">
-                    {event.description}
-                  </p>
-                </article>
+                <EventCard key={event.title} event={event} variant="upcoming" />
               ))}
             </div>
           </div>
@@ -377,21 +429,7 @@ export default async function Home() {
             <h3 className="mb-6 text-2xl font-black">Past</h3>
             <div className="space-y-4">
               {events.past.map((event) => (
-                <article
-                  key={event.title}
-                  className="rounded-2xl border border-white/10 bg-black/25 p-5 opacity-85"
-                >
-                  <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-white/70">
-                    <span>{event.date}</span>
-                    <span className="rounded-full bg-red-reverse/15 px-3 py-1 text-red-reverse">
-                      {event.tag}
-                    </span>
-                  </div>
-                  <h4 className="mt-4 text-xl font-black">{event.title}</h4>
-                  <p className="mt-2 leading-7 text-white/70">
-                    {event.description}
-                  </p>
-                </article>
+                <EventCard key={event.title} event={event} variant="past" />
               ))}
             </div>
           </div>
@@ -410,16 +448,27 @@ export default async function Home() {
               key={item.title}
               className="group relative min-h-64 overflow-hidden rounded-3xl border border-white/10 bg-surface p-6"
             >
+              {item.imageUrl ? (
+                <Image
+                  src={item.imageUrl}
+                  alt={item.title}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition group-hover:scale-105"
+                />
+              ) : null}
               <div
                 className={
-                  index % 2 === 0
-                    ? "absolute inset-0 bg-gradient-to-br from-red-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"
-                    : "absolute inset-0 bg-gradient-to-br from-blue-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"
+                  item.imageUrl
+                    ? "absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+                    : index % 2 === 0
+                      ? "absolute inset-0 bg-gradient-to-br from-red-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"
+                      : "absolute inset-0 bg-gradient-to-br from-blue-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"
                 }
               />
               <div className="relative z-10 flex h-full flex-col justify-end">
                 <h3 className="text-2xl font-black">{item.title}</h3>
-                <p className="mt-2 text-base leading-7 text-white/75">
+                <p className="mt-2 text-base leading-7 text-white/85">
                   {item.caption}
                 </p>
               </div>
@@ -440,15 +489,27 @@ export default async function Home() {
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {memberShowcase.map((member, index) => (
             <article key={member.name} className="glass rounded-3xl p-6">
-              <div
-                className={
-                  index % 2 === 0
-                    ? "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-reverse/15 text-xl font-black text-red-reverse"
-                    : "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-reverse/15 text-xl font-black text-blue-reverse"
-                }
-              >
-                {member.name.slice(0, 1)}
-              </div>
+              {member.imageUrl ? (
+                <div className="relative mb-5 h-14 w-14 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]">
+                  <Image
+                    src={member.imageUrl}
+                    alt={member.name}
+                    fill
+                    sizes="56px"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={
+                    index % 2 === 0
+                      ? "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-reverse/15 text-xl font-black text-red-reverse"
+                      : "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-reverse/15 text-xl font-black text-blue-reverse"
+                  }
+                >
+                  {member.name.slice(0, 1)}
+                </div>
+              )}
               <h3 className="text-2xl font-black">{member.name}</h3>
               <p className="mt-1 font-bold text-white/75">
                 {member.role} · {member.game}
@@ -496,7 +557,19 @@ export default async function Home() {
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {merchProducts.map((product) => (
             <article key={product.name} className="glass rounded-3xl p-6">
-              <div className="mb-6 aspect-[4/3] rounded-2xl border border-white/10 bg-gradient-to-br from-red-reverse/20 via-white/[0.03] to-blue-reverse/20" />
+              {product.imageUrl ? (
+                <div className="relative mb-6 aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-black/30">
+                  <Image
+                    src={product.imageUrl}
+                    alt={product.name}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="mb-6 aspect-[4/3] rounded-2xl border border-white/10 bg-gradient-to-br from-red-reverse/20 via-white/[0.03] to-blue-reverse/20" />
+              )}
               <h3 className="text-xl font-black">{product.name}</h3>
               <div className="mt-4 flex items-center justify-between gap-3">
                 <span className="font-bold text-white/70">{product.price}</span>
@@ -552,12 +625,52 @@ export default async function Home() {
       </section>
 
       <footer className="relative z-10 border-t border-white/10 px-5 py-10 sm:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 text-base text-white/75 md:flex-row md:items-center md:justify-between">
+        <div className="mx-auto flex max-w-7xl flex-col gap-6 text-base text-white/75 md:flex-row md:items-center md:justify-between">
           <p>
             <span className="font-black text-ink">Reverse Community</span> —
             reverse.my.id
           </p>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            {siteConfig.socials.discord ? (
+              <a
+                href={siteConfig.socials.discord}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-white"
+              >
+                Discord
+              </a>
+            ) : null}
+            {siteConfig.socials.instagram ? (
+              <a
+                href={siteConfig.socials.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-white"
+              >
+                Instagram
+              </a>
+            ) : null}
+            {siteConfig.socials.youtube ? (
+              <a
+                href={siteConfig.socials.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-white"
+              >
+                YouTube
+              </a>
+            ) : null}
+            {siteConfig.socials.tiktok ? (
+              <a
+                href={siteConfig.socials.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-white"
+              >
+                TikTok
+              </a>
+            ) : null}
             <a href="/terms" className="transition hover:text-white">
               Terms
             </a>
