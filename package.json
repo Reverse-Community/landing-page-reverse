@@ -7,7 +7,14 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload",
+    "migrate": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload migrate",
+    "migrate:fresh": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload migrate:fresh",
+    "migrate:create": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload migrate:create",
+    "migrate:status": "cross-env PAYLOAD_CONFIG_PATH=src/payload/payload.config.ts payload migrate:status",
+    "db:push": "cross-env tsx scripts/migrate.ts",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.0.0",
@@ -23,17 +30,24 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
+    "@payloadcms/drizzle": "^3.84.1",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^10.1.0",
+    "dotenv": "^17.4.2",
     "eslint": "^9.16.0",
     "eslint-config-next": "^16.2.2",
+    "patch-package": "^8.0.1",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.7.2",
     "yaml": "^2.9.0"
+  },
+  "overrides": {
+    "@next/env": "$next"
   }
 }

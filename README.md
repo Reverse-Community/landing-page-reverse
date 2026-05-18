@@ -109,6 +109,23 @@ NEXT_PUBLIC_UMAMI_WEBSITE_ID=your-website-id
 
 Jika env kosong, script analytics tidak di-render.
 
+## Database schema
+
+Sebelum membuka `/admin` di environment baru, push schema Payload ke Postgres:
+
+```bash
+npm run db:push
+```
+
+Script ini menjalankan `pushDevSchema` dari Payload Drizzle adapter yang otomatis sinkron skema dengan collections/globals di `src/payload`. Aman dijalankan ulang; perubahan skema akan dipush incremental.
+
+Untuk environment yang butuh migration files (multi-step rollout), gunakan:
+
+```bash
+npm run migrate:create
+npm run migrate
+```
+
 ## VPS deploy
 
 Prerequisite di VPS:
