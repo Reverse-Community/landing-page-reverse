@@ -359,49 +359,57 @@ export default async function Home() {
         />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {teamMembers.map((member) => (
-            <article key={member.name} className="glass rounded-3xl p-5">
+            <article
+              key={member.name}
+              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-white/10 bg-surface"
+            >
               {member.imageUrl ? (
-                <div className="relative mb-5 h-20 w-20 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
-                  <Image
-                    src={member.imageUrl}
-                    alt={member.name}
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                  />
-                </div>
+                <Image
+                  src={member.imageUrl}
+                  alt={member.name}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
               ) : (
                 <div
                   className={
                     member.accent === "red"
-                      ? "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-reverse/15 text-3xl font-black text-red-reverse"
-                      : "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-reverse/15 text-3xl font-black text-blue-reverse"
+                      ? "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-red-reverse/40 via-red-reverse/10 to-transparent text-7xl font-black text-red-reverse"
+                      : "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-reverse/40 via-blue-reverse/10 to-transparent text-7xl font-black text-blue-reverse"
                   }
                 >
                   {member.name.slice(0, 1)}
                 </div>
               )}
-              <h3 className="text-xl font-black">{member.name}</h3>
-              <p className="mt-1 text-sm text-white/70">{member.role}</p>
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-white/65">
-                {member.city}
-              </p>
-              {member.links && member.links.length > 0 ? (
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {member.links.map((link) => (
-                    <li key={`${member.name}-${link.url}`}>
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white/75 transition hover:border-white/30 hover:text-ink"
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+
+              <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5 pt-20">
+                <h3 className="text-xl font-black text-ink drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
+                  {member.name}
+                </h3>
+                <p className="mt-1 text-sm font-bold text-white/85 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+                  {member.role}
+                </p>
+                <p className="mt-2 text-[0.65rem] font-black uppercase tracking-[0.22em] text-white/70 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+                  {member.city}
+                </p>
+                {member.links && member.links.length > 0 ? (
+                  <ul className="mt-4 flex flex-wrap gap-2">
+                    {member.links.map((link) => (
+                      <li key={`${member.name}-${link.url}`}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-ink backdrop-blur transition hover:border-white/40 hover:bg-white/20"
+                        >
+                          {link.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             </article>
           ))}
         </div>
