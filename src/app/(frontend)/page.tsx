@@ -13,6 +13,7 @@ import {
   Users2,
 } from "lucide-react";
 import Image from "next/image";
+import type { TeamMember } from "@/data/community";
 import { StatsCard } from "@/components/stats-card";
 import { getLandingContent } from "@/lib/content";
 
@@ -26,6 +27,60 @@ const iconMap = {
 };
 
 const bilingualLabel = "ID / EN";
+
+function TeamCard({ member }: { member: TeamMember }) {
+  return (
+    <article className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-white/10 bg-surface">
+      {member.imageUrl ? (
+        <Image
+          src={member.imageUrl}
+          alt={member.name}
+          fill
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover transition duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div
+          className={
+            member.accent === "red"
+              ? "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-red-reverse/40 via-red-reverse/10 to-transparent text-7xl font-black text-red-reverse"
+              : "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-reverse/40 via-blue-reverse/10 to-transparent text-7xl font-black text-blue-reverse"
+          }
+        >
+          {member.name.slice(0, 1)}
+        </div>
+      )}
+
+      <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5 pt-20">
+        <h3 className="text-xl font-black text-ink drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
+          {member.name}
+        </h3>
+        <p className="mt-1 text-sm font-bold text-white/85 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+          {member.role}
+        </p>
+        <p className="mt-2 text-[0.65rem] font-black uppercase tracking-[0.22em] text-white/70 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
+          {member.city}
+        </p>
+        {member.links && member.links.length > 0 ? (
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {member.links.map((link) => (
+              <li key={`${member.name}-${link.url}`}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-ink backdrop-blur transition hover:border-white/40 hover:bg-white/20"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+    </article>
+  );
+}
 
 function EventCard({
   event,
@@ -357,62 +412,38 @@ export default async function Home() {
           title="Orang di balik layar"
           description="Tim yang bekerja di balik perkembangan Reverse, menghadirkan pengalaman terbaik untuk komunitas."
         />
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {teamMembers.map((member) => (
-            <article
-              key={member.name}
-              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border border-white/10 bg-surface"
-            >
-              {member.imageUrl ? (
-                <Image
-                  src={member.imageUrl}
-                  alt={member.name}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div
-                  className={
-                    member.accent === "red"
-                      ? "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-red-reverse/40 via-red-reverse/10 to-transparent text-7xl font-black text-red-reverse"
-                      : "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-reverse/40 via-blue-reverse/10 to-transparent text-7xl font-black text-blue-reverse"
-                  }
-                >
-                  {member.name.slice(0, 1)}
-                </div>
-              )}
+        {(() => {
+          const total = teamMembers.length;
+          const remainder = total % 4;
+          const leadersCount = remainder === 0 ? 0 : remainder;
+          const leaders = teamMembers.slice(0, leadersCount);
+          const rest = teamMembers.slice(leadersCount);
+          const leaderColsClass =
+            leadersCount === 1
+              ? "max-w-xs sm:grid-cols-1"
+              : leadersCount === 2
+                ? "max-w-2xl sm:grid-cols-2"
+                : "max-w-4xl sm:grid-cols-3";
 
-              <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-5 pt-20">
-                <h3 className="text-xl font-black text-ink drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]">
-                  {member.name}
-                </h3>
-                <p className="mt-1 text-sm font-bold text-white/85 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
-                  {member.role}
-                </p>
-                <p className="mt-2 text-[0.65rem] font-black uppercase tracking-[0.22em] text-white/70 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
-                  {member.city}
-                </p>
-                {member.links && member.links.length > 0 ? (
-                  <ul className="mt-4 flex flex-wrap gap-2">
-                    {member.links.map((link) => (
-                      <li key={`${member.name}-${link.url}`}>
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-ink backdrop-blur transition hover:border-white/40 hover:bg-white/20"
-                        >
-                          {link.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            </article>
-          ))}
-        </div>
+          return (
+            <div className="mt-14 space-y-4">
+              {leaders.length > 0 ? (
+                <div className={`mx-auto grid gap-4 ${leaderColsClass}`}>
+                  {leaders.map((member) => (
+                    <TeamCard key={member.name} member={member} />
+                  ))}
+                </div>
+              ) : null}
+              {rest.length > 0 ? (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {rest.map((member) => (
+                    <TeamCard key={member.name} member={member} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          );
+        })()}
       </section>
 
       <section
