@@ -258,10 +258,17 @@ export default async function Home() {
         <div className="relative hidden min-h-[36rem] lg:block">
           <div className="absolute inset-0 rounded-[3rem] border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-transparent p-5 shadow-soft">
             <div className="h-full rounded-[2.2rem] border border-white/10 bg-black/35 p-6">
-              <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.24em] text-white/65">
-                <span>Reverse OS</span>
+              <a
+                href="/os"
+                className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.24em] text-white/65 transition hover:text-ink"
+                aria-label="Open Reverse OS roadmap"
+              >
+                <span className="inline-flex items-center gap-2">
+                  Reverse OS
+                  <ChevronRight className="h-3.5 w-3.5 opacity-60" aria-hidden="true" />
+                </span>
                 <span className="text-blue-reverse">live</span>
-              </div>
+              </a>
               <div className="mt-8 space-y-3">
                 {roadmap.map((item, index) => (
                   <div

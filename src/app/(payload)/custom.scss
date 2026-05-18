@@ -1,1 +1,40 @@
-/* Custom Payload admin overrides bisa ditambahkan di sini */
+/* Custom Payload admin overrides */
+
+:root {
+  /* Wider sidebar untuk readability di desktop */
+  --nav-width: 320px;
+}
+
+@media (max-width: 800px) {
+  :root {
+    /* Mobile tetap full width */
+    --nav-width: 100vw;
+  }
+}
+
+.nav {
+  /* Beri sedikit lebih banyak padding biar nggak sumpek */
+  padding: 1.5rem 1.25rem;
+
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.nav__link,
+.nav-group__toggle,
+.nav-group__label {
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.nav-group__label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  opacity: 0.8;
+}
+
+.nav__link {
+  padding-block: 0.55rem;
+}
