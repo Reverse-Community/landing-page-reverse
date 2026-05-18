@@ -10,7 +10,7 @@ import {
   Sparkles,
   Store,
   Trophy,
-  Users2
+  Users2,
 } from "lucide-react";
 import Image from "next/image";
 import { StatsCard } from "@/components/stats-card";
@@ -22,24 +22,54 @@ const iconMap = {
   Music2,
   BookOpen,
   Radio,
-  CalendarDays
+  CalendarDays,
 };
 
 const bilingualLabel = "ID / EN";
 
-function SectionHeader({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+}) {
   return (
     <div className="mx-auto max-w-3xl text-center">
-      <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-blue-reverse sm:text-xs sm:tracking-[0.36em]">{eyebrow}</p>
-      <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-ink sm:text-5xl">{title}</h2>
-      <p className="mt-4 text-base leading-8 text-white/70 sm:text-lg">{description}</p>
+      <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-blue-reverse sm:text-xs sm:tracking-[0.36em]">
+        {eyebrow}
+      </p>
+      <h2 className="mt-4 text-3xl font-black tracking-[-0.04em] text-ink sm:text-5xl">
+        {title}
+      </h2>
+      <p className="mt-4 text-base leading-8 text-white/70 sm:text-lg">
+        {description}
+      </p>
     </div>
   );
 }
 
 export default async function Home() {
-  const { aboutContent, events, faqs, gallery, gameStats, marqueeItems, memberShowcase, merchProducts, pillars, roadmap, siteConfig, teamMembers } = await getLandingContent();
-  const statsFallback = { ...siteConfig.statsFallback, source: "fallback" as const };
+  const {
+    aboutContent,
+    events,
+    faqs,
+    gallery,
+    gameStats,
+    marqueeItems,
+    memberShowcase,
+    merchProducts,
+    pillars,
+    roadmap,
+    siteConfig,
+    teamMembers,
+  } = await getLandingContent();
+  const statsFallback = {
+    ...siteConfig.statsFallback,
+    source: "fallback" as const,
+  };
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-base">
@@ -48,14 +78,35 @@ export default async function Home() {
       <div className="pointer-events-none absolute right-[-12rem] top-10 h-[30rem] w-[30rem] rounded-full bg-blue-reverse/20 blur-3xl" />
 
       <header className="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 sm:py-6">
-        <a href="#top" className="flex items-center gap-3" aria-label="Reverse Community home">
-          <Image src="/logo-mark.svg" alt="Reverse Community" width={44} height={44} priority className="h-11 w-11 rounded-xl border border-white/10 bg-white/[0.04] object-cover shadow-red" />
-          <span className="text-base font-black uppercase tracking-[0.18em] text-ink sm:text-sm sm:tracking-[0.22em]">Reverse</span>
+        <a
+          href="#top"
+          className="flex items-center gap-3"
+          aria-label="Reverse Community home"
+        >
+          <Image
+            src="/logo-mark.svg"
+            alt="Reverse Community"
+            width={44}
+            height={44}
+            priority
+            className="h-11 w-11 rounded-xl border border-white/10 bg-white/[0.04] object-cover shadow-red"
+          />
+          <span className="text-base font-black uppercase tracking-[0.18em] text-ink sm:text-sm sm:tracking-[0.22em]">
+            Reverse
+          </span>
         </a>
-        <nav className="hidden items-center gap-6 text-sm font-bold text-white/80 lg:flex" aria-label="Main navigation">
+        <nav
+          className="hidden items-center gap-6 text-sm font-bold text-white/80 lg:flex"
+          aria-label="Main navigation"
+        >
           {siteConfig.nav.map((item) => (
-            <a key={item.href} href={item.href} className="transition hover:text-ink">
-              {item.label} <span className="text-white/50">/ {item.labelEn}</span>
+            <a
+              key={item.href}
+              href={item.href}
+              className="transition hover:text-ink"
+            >
+              {item.label}{" "}
+              <span className="text-white/50">/ {item.labelEn}</span>
             </a>
           ))}
         </nav>
@@ -67,24 +118,42 @@ export default async function Home() {
         </a>
       </header>
 
-      <section id="top" className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-12 lg:grid-cols-[1.15fr_.85fr] lg:pb-28 lg:pt-20">
+      <section
+        id="top"
+        className="relative z-10 mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-8 sm:px-8 sm:pb-20 sm:pt-12 lg:grid-cols-[1.15fr_.85fr] lg:pb-28 lg:pt-20"
+      >
         <div className="flex flex-col justify-center">
           <div className="glass mb-6 inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-white/70 sm:text-xs sm:tracking-[0.24em]">
             <span className="h-2 w-2 rounded-full bg-red-reverse shadow-red" />
             Reverse Community · {bilingualLabel}
           </div>
-          <Image src="/logo.png" alt="Reverse Community logo" width={1536} height={1024} priority className="mb-7 h-auto w-full max-w-[34rem] rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-soft" />
+          <Image
+            src="/logo.png"
+            alt="Reverse Community logo"
+            width={1536}
+            height={1024}
+            priority
+            className="mb-7 h-auto w-full max-w-[34rem] rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-soft"
+          />
           <h1 className="max-w-5xl text-[3.25rem] font-black leading-[0.92] tracking-[-0.075em] text-ink sm:text-7xl lg:text-8xl">
             Connect. Play. <span className="glow-text">Reverse</span> the noise.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-white/75 sm:mt-7 sm:text-xl">
-            {siteConfig.tagline.id} <span className="text-white/40">—</span> {siteConfig.tagline.en}
+            {siteConfig.tagline.id} <span className="text-white/40">—</span>{" "}
+            {siteConfig.tagline.en}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href={siteConfig.inviteUrl} className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-red-reverse to-blue-reverse px-6 py-3 font-black text-white shadow-blue transition hover:scale-[1.02]">
-              Gabung Sekarang <ChevronRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
+            <a
+              href={siteConfig.inviteUrl}
+              className="group inline-flex items-center justify-center rounded-full bg-gradient-to-r from-red-reverse to-blue-reverse px-6 py-3 font-black text-white shadow-blue transition hover:scale-[1.02]"
+            >
+              Gabung Sekarang{" "}
+              <ChevronRight className="ml-2 h-4 w-4 transition group-hover:translate-x-1" />
             </a>
-            <a href="#about" className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 py-3 font-bold text-ink transition hover:border-white/25 hover:bg-white/[0.08]">
+            <a
+              href="#about"
+              className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-6 py-3 font-bold text-ink transition hover:border-white/25 hover:bg-white/[0.08]"
+            >
               Lihat Identitas
             </a>
           </div>
@@ -102,10 +171,24 @@ export default async function Home() {
               </div>
               <div className="mt-8 space-y-3">
                 {roadmap.map((item, index) => (
-                  <div key={item} className="glass flex items-center justify-between rounded-2xl p-3" style={{ transform: `translateX(${index % 2 === 0 ? 0 : 18}px)` }}>
+                  <div
+                    key={item}
+                    className="glass flex items-center justify-between rounded-2xl p-3"
+                    style={{
+                      transform: `translateX(${index % 2 === 0 ? 0 : 18}px)`,
+                    }}
+                  >
                     <div className="flex items-center gap-3">
                       <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-red-reverse">
-                        {index === 0 ? <Users2 className="h-5 w-5" /> : index === 1 ? <Trophy className="h-5 w-5" /> : index === 2 ? <Store className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}
+                        {index === 0 ? (
+                          <Users2 className="h-5 w-5" />
+                        ) : index === 1 ? (
+                          <Trophy className="h-5 w-5" />
+                        ) : index === 2 ? (
+                          <Store className="h-5 w-5" />
+                        ) : (
+                          <Sparkles className="h-5 w-5" />
+                        )}
                       </span>
                       <span className="font-bold">{item}</span>
                     </div>
@@ -114,14 +197,23 @@ export default async function Home() {
                 ))}
               </div>
               <div className="mt-8 rounded-3xl border border-blue-reverse/25 bg-blue-reverse/10 p-5">
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-blue-reverse">Brand pulse</p>
-                <p className="mt-3 text-xl font-black tracking-tight">Minimal black. Red energy. Blue signal.</p>
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-blue-reverse">
+                  Brand pulse
+                </p>
+                <p className="mt-3 text-xl font-black tracking-tight">
+                  Minimal black. Red energy. Blue signal.
+                </p>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-3">
                 {["Mabar", "Belajar", "Event"].map((item) => (
-                  <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center">
+                  <div
+                    key={item}
+                    className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center"
+                  >
                     <p className="text-lg font-black text-ink">{item}</p>
-                    <p className="mt-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/65">active</p>
+                    <p className="mt-1 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/65">
+                      active
+                    </p>
                   </div>
                 ))}
               </div>
@@ -133,8 +225,14 @@ export default async function Home() {
       <section className="relative z-10 border-y border-white/10 bg-white/[0.03] py-5">
         <div className="marquee">
           <div className="marquee-track gap-4">
-            {[...marqueeItems.map((item) => `${item}-a`), ...marqueeItems.map((item) => `${item}-b`)].map((itemKey) => (
-              <span key={itemKey} className="rounded-full border border-white/10 bg-black/40 px-5 py-2.5 text-xs font-black uppercase tracking-[0.2em] text-white/70 sm:text-sm">
+            {[
+              ...marqueeItems.map((item) => `${item}-a`),
+              ...marqueeItems.map((item) => `${item}-b`),
+            ].map((itemKey) => (
+              <span
+                key={itemKey}
+                className="rounded-full border border-white/10 bg-black/40 px-5 py-2.5 text-xs font-black uppercase tracking-[0.2em] text-white/70 sm:text-sm"
+              >
                 {itemKey.slice(0, -2)}
               </span>
             ))}
@@ -142,71 +240,135 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="about" className="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[.9fr_1.1fr]">
+      <section
+        id="about"
+        className="relative z-10 mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[.9fr_1.1fr]"
+      >
         <div>
-          <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-red-reverse sm:text-xs sm:tracking-[0.36em]">About / Tentang</p>
-          <h2 className="mt-4 text-4xl font-black tracking-[-0.05em] sm:text-6xl">{aboutContent.title}</h2>
+          <p className="text-[0.72rem] font-black uppercase tracking-[0.24em] text-red-reverse sm:text-xs sm:tracking-[0.36em]">
+            About / Tentang
+          </p>
+          <h2 className="mt-4 text-4xl font-black tracking-[-0.05em] sm:text-6xl">
+            {aboutContent.title}
+          </h2>
         </div>
         <div className="glass rounded-3xl p-7 sm:p-10">
           <p className="text-base leading-8 text-white/75 sm:text-lg sm:leading-9">
             {aboutContent.body}
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            {['Welcoming', 'Creative', 'Alive'].map((item) => (
-              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm font-bold text-ink">{item}</div>
+            {["Welcoming", "Creative", "Alive"].map((item) => (
+              <div
+                key={item}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-sm font-bold text-ink"
+              >
+                {item}
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="pillars" className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Spaces" title="Ruang yang bikin komunitas bergerak" description="Reverse bukan satu channel. Reverse adalah kumpulan ruang kecil untuk berbagai ritme: santai, kompetitif, produktif, dan kreatif." />
+      <section
+        id="pillars"
+        className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="Spaces"
+          title="Ruang yang bikin komunitas bergerak"
+          description="Reverse bukan satu channel. Reverse adalah kumpulan ruang kecil untuk berbagai ritme: santai, kompetitif, produktif, dan kreatif."
+        />
         <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {pillars.map((pillar, index) => {
             const Icon = iconMap[pillar.icon];
             return (
-              <article key={pillar.title} className="glass group rounded-3xl p-6 transition duration-300 hover:-translate-y-1 hover:border-white/20">
-                <div className={index % 2 === 0 ? "mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-reverse/15 text-red-reverse shadow-red" : "mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-reverse/15 text-blue-reverse shadow-blue"}>
+              <article
+                key={pillar.title}
+                className="glass group rounded-3xl p-6 transition duration-300 hover:-translate-y-1 hover:border-white/20"
+              >
+                <div
+                  className={
+                    index % 2 === 0
+                      ? "mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-reverse/15 text-red-reverse shadow-red"
+                      : "mb-8 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-reverse/15 text-blue-reverse shadow-blue"
+                  }
+                >
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="text-2xl font-black tracking-tight">{pillar.title}</h3>
-              <p className="mt-1 text-sm font-bold uppercase tracking-[0.18em] text-white/65">{pillar.titleEn}</p>
-                <p className="mt-5 text-base leading-7 text-white/70">{pillar.description}</p>
+                <h3 className="text-2xl font-black tracking-tight">
+                  {pillar.title}
+                </h3>
+                <p className="mt-1 text-sm font-bold uppercase tracking-[0.18em] text-white/65">
+                  {pillar.titleEn}
+                </p>
+                <p className="mt-5 text-base leading-7 text-white/70">
+                  {pillar.description}
+                </p>
               </article>
             );
           })}
         </div>
       </section>
 
-      <section id="team" className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Team" title="Orang di balik layar" description="Placeholder untuk tim Reverse. Nanti bisa diganti dari CMS saat admin panel aktif." />
+      <section
+        id="team"
+        className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="Team"
+          title="Orang di balik layar"
+          description="Tim yang bekerja di balik perkembangan Reverse, menghadirkan pengalaman terbaik untuk komunitas."
+        />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {teamMembers.map((member) => (
             <article key={member.name} className="glass rounded-3xl p-5">
-              <div className={member.accent === "red" ? "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-reverse/15 text-3xl font-black text-red-reverse" : "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-reverse/15 text-3xl font-black text-blue-reverse"}>
+              <div
+                className={
+                  member.accent === "red"
+                    ? "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-reverse/15 text-3xl font-black text-red-reverse"
+                    : "mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-blue-reverse/15 text-3xl font-black text-blue-reverse"
+                }
+              >
                 {member.name.slice(0, 1)}
               </div>
               <h3 className="text-xl font-black">{member.name}</h3>
               <p className="mt-1 text-sm text-white/70">{member.role}</p>
-                <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-white/65">{member.city}</p>
+              <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-white/65">
+                {member.city}
+              </p>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="events" className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Events" title="Aktivitas yang bikin member balik lagi" description="Contoh format event untuk Reverse: gaming, creative, learning, dan community night." />
+      <section
+        id="events"
+        className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="Events"
+          title="Aktivitas yang bikin member balik lagi"
+          description="Contoh format event untuk Reverse: gaming, creative, learning, dan community night."
+        />
         <div className="mt-14 grid gap-6 lg:grid-cols-2">
           <div className="glass rounded-3xl p-6">
             <h3 className="mb-6 text-2xl font-black">Upcoming</h3>
             <div className="space-y-4">
               {events.upcoming.map((event) => (
-                <article key={event.title} className="rounded-2xl border border-white/10 bg-black/25 p-5">
+                <article
+                  key={event.title}
+                  className="rounded-2xl border border-white/10 bg-black/25 p-5"
+                >
                   <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-white/70">
-                    <span>{event.date}</span><span className="rounded-full bg-blue-reverse/15 px-3 py-1 text-blue-reverse">{event.tag}</span>
+                    <span>{event.date}</span>
+                    <span className="rounded-full bg-blue-reverse/15 px-3 py-1 text-blue-reverse">
+                      {event.tag}
+                    </span>
                   </div>
                   <h4 className="mt-4 text-xl font-black">{event.title}</h4>
-                  <p className="mt-2 leading-7 text-white/70">{event.description}</p>
+                  <p className="mt-2 leading-7 text-white/70">
+                    {event.description}
+                  </p>
                 </article>
               ))}
             </div>
@@ -215,12 +377,20 @@ export default async function Home() {
             <h3 className="mb-6 text-2xl font-black">Past</h3>
             <div className="space-y-4">
               {events.past.map((event) => (
-                <article key={event.title} className="rounded-2xl border border-white/10 bg-black/25 p-5 opacity-85">
+                <article
+                  key={event.title}
+                  className="rounded-2xl border border-white/10 bg-black/25 p-5 opacity-85"
+                >
                   <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-[0.16em] text-white/70">
-                    <span>{event.date}</span><span className="rounded-full bg-red-reverse/15 px-3 py-1 text-red-reverse">{event.tag}</span>
+                    <span>{event.date}</span>
+                    <span className="rounded-full bg-red-reverse/15 px-3 py-1 text-red-reverse">
+                      {event.tag}
+                    </span>
                   </div>
                   <h4 className="mt-4 text-xl font-black">{event.title}</h4>
-                  <p className="mt-2 leading-7 text-white/70">{event.description}</p>
+                  <p className="mt-2 leading-7 text-white/70">
+                    {event.description}
+                  </p>
                 </article>
               ))}
             </div>
@@ -229,40 +399,84 @@ export default async function Home() {
       </section>
 
       <section className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Highlights" title="Gallery / momen komunitas" description="Grid ini CMS-ready. Saat ada event asli, tinggal upload foto dan caption dari admin panel." />
+        <SectionHeader
+          eyebrow="Highlights"
+          title="Gallery / Momen Komunitas"
+          description="Kumpulan momen seru, event komunitas, dan aktivitas pemain di dunia Reverse."
+        />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {gallery.map((item, index) => (
-            <article key={item.title} className="group relative min-h-64 overflow-hidden rounded-3xl border border-white/10 bg-surface p-6">
-              <div className={index % 2 === 0 ? "absolute inset-0 bg-gradient-to-br from-red-reverse/25 to-transparent opacity-70 transition group-hover:scale-110" : "absolute inset-0 bg-gradient-to-br from-blue-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"} />
+            <article
+              key={item.title}
+              className="group relative min-h-64 overflow-hidden rounded-3xl border border-white/10 bg-surface p-6"
+            >
+              <div
+                className={
+                  index % 2 === 0
+                    ? "absolute inset-0 bg-gradient-to-br from-red-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"
+                    : "absolute inset-0 bg-gradient-to-br from-blue-reverse/25 to-transparent opacity-70 transition group-hover:scale-110"
+                }
+              />
               <div className="relative z-10 flex h-full flex-col justify-end">
                 <h3 className="text-2xl font-black">{item.title}</h3>
-                <p className="mt-2 text-base leading-7 text-white/75">{item.caption}</p>
+                <p className="mt-2 text-base leading-7 text-white/75">
+                  {item.caption}
+                </p>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="members" className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Members" title="Member showcase" description="Spotlight untuk member Reverse. Data ini bisa kamu edit dari CMS saat mode CMS diaktifkan." />
+      <section
+        id="members"
+        className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="Members"
+          title="Member Showcase"
+          description="Spotlight untuk member komunitas Reverse yang ikut meramaikan dan membangun cerita setiap harinya."
+        />
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {memberShowcase.map((member, index) => (
             <article key={member.name} className="glass rounded-3xl p-6">
-              <div className={index % 2 === 0 ? "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-reverse/15 text-xl font-black text-red-reverse" : "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-reverse/15 text-xl font-black text-blue-reverse"}>{member.name.slice(0, 1)}</div>
+              <div
+                className={
+                  index % 2 === 0
+                    ? "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-reverse/15 text-xl font-black text-red-reverse"
+                    : "mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-reverse/15 text-xl font-black text-blue-reverse"
+                }
+              >
+                {member.name.slice(0, 1)}
+              </div>
               <h3 className="text-2xl font-black">{member.name}</h3>
-              <p className="mt-1 font-bold text-white/75">{member.role} · {member.game}</p>
+              <p className="mt-1 font-bold text-white/75">
+                {member.role} · {member.game}
+              </p>
               <p className="mt-5 leading-7 text-white/75">“{member.quote}”</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="game-stats" className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Game Stats" title="Community pulse" description="Bar statistik game dan aktivitas komunitas. Untuk MVP masih dummy, nanti editable dari CMS." />
+      <section
+        id="game-stats"
+        className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="Game Stats"
+          title="Community Pulse"
+          description="Statistik aktivitas komunitas dan perkembangan dunia Reverse secara real-time."
+        />
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {gameStats.map((stat) => (
-            <article key={stat.label} className="glass rounded-3xl p-7 text-center">
-              <p className="glow-text text-5xl font-black tracking-[-0.06em]">{stat.value}</p>
+            <article
+              key={stat.label}
+              className="glass rounded-3xl p-7 text-center"
+            >
+              <p className="glow-text text-5xl font-black tracking-[-0.06em]">
+                {stat.value}
+              </p>
               <h3 className="mt-4 text-xl font-black">{stat.label}</h3>
               <p className="mt-3 leading-7 text-white/70">{stat.description}</p>
             </article>
@@ -270,8 +484,15 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="store" className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="Merch / Store" title="Reverse store concept" description="Catalog merch awal. Bisa dikelola lewat CMS dan nanti dikembangkan ke checkout atau Discord ticket." />
+      <section
+        id="store"
+        className="relative z-10 mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="Merch / Store"
+          title="Reverse Store Concept"
+          description="Koleksi merch dan item eksklusif komunitas Reverse yang akan terus berkembang."
+        />
         <div className="mt-14 grid gap-4 md:grid-cols-3">
           {merchProducts.map((product) => (
             <article key={product.name} className="glass rounded-3xl p-6">
@@ -279,19 +500,30 @@ export default async function Home() {
               <h3 className="text-xl font-black">{product.name}</h3>
               <div className="mt-4 flex items-center justify-between gap-3">
                 <span className="font-bold text-white/70">{product.price}</span>
-                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-white/70">{product.status}</span>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-white/70">
+                  {product.status}
+                </span>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="faq" className="relative z-10 mx-auto max-w-4xl px-5 py-16 sm:px-8 sm:py-24">
-        <SectionHeader eyebrow="FAQ" title="Pertanyaan cepat" description="Jawaban singkat untuk member baru dan calon partner." />
+      <section
+        id="faq"
+        className="relative z-10 mx-auto max-w-4xl px-5 py-16 sm:px-8 sm:py-24"
+      >
+        <SectionHeader
+          eyebrow="FAQ"
+          title="Pertanyaan cepat"
+          description="Jawaban singkat untuk member baru dan calon partner."
+        />
         <div className="mt-12 space-y-3">
           {faqs.map((faq) => (
             <details key={faq.question} className="glass group rounded-2xl p-5">
-              <summary className="cursor-pointer list-none font-black marker:hidden">{faq.question}</summary>
+              <summary className="cursor-pointer list-none font-black marker:hidden">
+                {faq.question}
+              </summary>
               <p className="mt-4 leading-7 text-white/70">{faq.answer}</p>
             </details>
           ))}
@@ -303,19 +535,41 @@ export default async function Home() {
           <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-reverse to-blue-reverse">
             <ShieldCheck className="h-7 w-7" />
           </div>
-          <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">Masuk ke sisi Reverse.</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/70">Join the room, meet the people, shape the culture. Komunitas ini dibuat untuk tumbuh pelan tapi kuat.</p>
-          <a href={siteConfig.inviteUrl} className="mt-8 inline-flex rounded-full bg-white px-7 py-3 font-black text-black transition hover:bg-blue-reverse hover:text-white">Gabung Discord</a>
+          <h2 className="text-4xl font-black tracking-[-0.05em] sm:text-6xl">
+            Masuk ke sisi Reverse.
+          </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-white/70">
+            Join the room, meet the people, shape the culture. Komunitas ini
+            dibuat untuk tumbuh pelan tapi kuat.
+          </p>
+          <a
+            href={siteConfig.inviteUrl}
+            className="mt-8 inline-flex rounded-full bg-white px-7 py-3 font-black text-black transition hover:bg-blue-reverse hover:text-white"
+          >
+            Gabung Discord
+          </a>
         </div>
       </section>
 
       <footer className="relative z-10 border-t border-white/10 px-5 py-10 sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-5 text-base text-white/75 md:flex-row md:items-center md:justify-between">
-          <p><span className="font-black text-ink">Reverse Community</span> — reverse.my.id</p>
+          <p>
+            <span className="font-black text-ink">Reverse Community</span> —
+            reverse.my.id
+          </p>
           <div className="flex flex-wrap gap-4">
-            <a href="/terms" className="transition hover:text-white">Terms</a>
-            <a href="/privacy" className="transition hover:text-white">Privacy</a>
-            <a href="/community-guidelines" className="transition hover:text-white">Guidelines</a>
+            <a href="/terms" className="transition hover:text-white">
+              Terms
+            </a>
+            <a href="/privacy" className="transition hover:text-white">
+              Privacy
+            </a>
+            <a
+              href="/community-guidelines"
+              className="transition hover:text-white"
+            >
+              Guidelines
+            </a>
           </div>
           <p>© 2026. Built for community, gaming, and creative growth.</p>
         </div>
