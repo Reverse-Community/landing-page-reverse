@@ -1,0 +1,286 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - link "Reverse Community home" [ref=e4] [cursor=pointer]:
+      - /url: "#top"
+      - img "Reverse Community" [ref=e5]
+      - generic [ref=e6]: Reverse
+    - link "Join" [ref=e7] [cursor=pointer]:
+      - /url: https://discord.gg/FpTcm5VYTt
+  - generic [ref=e9]:
+    - generic [ref=e10]: Reverse Community · ID / EN
+    - img "Reverse Community logo" [ref=e12]
+    - heading "Connect. Play. Reverse the noise." [level=1] [ref=e13]
+    - paragraph [ref=e14]: Tempat ngobrol, mabar, belajar, dan tumbuh bareng. — A place to connect, play, learn, and grow together.
+    - generic [ref=e15]:
+      - link "Gabung Sekarang" [ref=e16] [cursor=pointer]:
+        - /url: https://discord.gg/FpTcm5VYTt
+        - text: Gabung Sekarang
+        - img [ref=e17]
+      - link "Lihat Identitas" [ref=e19] [cursor=pointer]:
+        - /url: "#about"
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - paragraph [ref=e25]: Members
+        - paragraph [ref=e26]: 1,2 rb
+        - paragraph [ref=e27]: komunitas
+      - generic [ref=e28]:
+        - paragraph [ref=e31]: Online
+        - paragraph [ref=e32]: "128"
+        - paragraph [ref=e33]: fallback
+      - generic [ref=e34]:
+        - paragraph [ref=e37]: Events
+        - paragraph [ref=e38]: "24"
+        - paragraph [ref=e39]: terkurasi
+  - generic [ref=e42]:
+    - generic [ref=e43]: general chat
+    - generic [ref=e44]: gaming lobby
+    - generic [ref=e45]: music room
+    - generic [ref=e46]: learning circle
+    - generic [ref=e47]: creative lab
+    - generic [ref=e48]: podcast night
+    - generic [ref=e49]: community events
+    - generic [ref=e50]: member showcase
+    - generic [ref=e51]: general chat
+    - generic [ref=e52]: gaming lobby
+    - generic [ref=e53]: music room
+    - generic [ref=e54]: learning circle
+    - generic [ref=e55]: creative lab
+    - generic [ref=e56]: podcast night
+    - generic [ref=e57]: community events
+    - generic [ref=e58]: member showcase
+  - generic [ref=e59]:
+    - generic [ref=e60]:
+      - paragraph [ref=e61]: About / Tentang
+      - heading "Komunitas yang terasa seperti rumah kedua." [level=2] [ref=e62]
+    - generic [ref=e63]:
+      - paragraph [ref=e64]: "Reverse Community dibangun sebagai ruang digital untuk orang-orang yang ingin punya koneksi sehat: bisa mabar, ngobrol random, belajar hal baru, dan ikut membentuk culture komunitas dari awal."
+      - generic [ref=e65]:
+        - generic [ref=e66]: Welcoming
+        - generic [ref=e67]: Creative
+        - generic [ref=e68]: Alive
+  - generic [ref=e69]:
+    - generic [ref=e70]:
+      - paragraph [ref=e71]: Spaces
+      - heading "Ruang yang bikin komunitas bergerak" [level=2] [ref=e72]
+      - paragraph [ref=e73]: "Reverse bukan satu channel. Reverse adalah kumpulan ruang kecil untuk berbagai ritme: santai, kompetitif, produktif, dan kreatif."
+    - generic [ref=e74]:
+      - article [ref=e75]:
+        - img [ref=e77]
+        - heading "General Chat" [level=3] [ref=e79]
+        - paragraph [ref=e80]: Daily Hangout
+        - paragraph [ref=e81]: Ruang santai buat ngobrol, curhat, kenalan, dan nyambung sama orang baru tanpa ribet.
+      - article [ref=e82]:
+        - img [ref=e84]
+        - heading "Gaming" [level=3] [ref=e86]
+        - paragraph [ref=e87]: Play Together
+        - paragraph [ref=e88]: Cari party, bikin squad, diskusi meta, atau ikutan event mabar dari game casual sampai kompetitif.
+      - article [ref=e89]:
+        - img [ref=e91]
+        - heading "Music" [level=3] [ref=e94]
+        - paragraph [ref=e95]: Shared Sound
+        - paragraph [ref=e96]: Share playlist, discovery lagu baru, karaoke santai, dan night session bareng member.
+      - article [ref=e97]:
+        - img [ref=e99]
+        - heading "Learning" [level=3] [ref=e101]
+        - paragraph [ref=e102]: Grow Together
+        - paragraph [ref=e103]: Belajar bareng soal coding, bahasa, desain, karier, dan hal-hal produktif lainnya.
+      - article [ref=e104]:
+        - img [ref=e106]
+        - heading "Podcast & Creative" [level=3] [ref=e112]
+        - paragraph [ref=e113]: Creator Space
+        - paragraph [ref=e114]: Tempat ide, konten, podcast, live session, dan showcase karya member Reverse.
+      - article [ref=e115]:
+        - img [ref=e117]
+        - heading "Events" [level=3] [ref=e119]
+        - paragraph [ref=e120]: Moments
+        - paragraph [ref=e121]: Game night, sharing session, meetup, tournament kecil, dan activity yang bikin komunitas hidup.
+  - generic [ref=e122]:
+    - generic [ref=e123]:
+      - paragraph [ref=e124]: Team
+      - heading "Orang di balik layar" [level=2] [ref=e125]
+      - paragraph [ref=e126]: Placeholder untuk tim Reverse. Nanti bisa diganti dari CMS saat admin panel aktif.
+    - generic [ref=e127]:
+      - article [ref=e128]:
+        - generic [ref=e129]: S
+        - heading "Squeezy" [level=3] [ref=e130]
+        - paragraph [ref=e131]: Founder
+        - paragraph [ref=e132]: Indonesia
+      - article [ref=e133]:
+        - generic [ref=e134]: A
+        - heading "Aksa" [level=3] [ref=e135]
+        - paragraph [ref=e136]: Community Lead
+        - paragraph [ref=e137]: Jakarta
+      - article [ref=e138]:
+        - generic [ref=e139]: "N"
+        - heading "Naya" [level=3] [ref=e140]
+        - paragraph [ref=e141]: Event Curator
+        - paragraph [ref=e142]: Bandung
+      - article [ref=e143]:
+        - generic [ref=e144]: R
+        - heading "Raka" [level=3] [ref=e145]
+        - paragraph [ref=e146]: Tech & Ops
+        - paragraph [ref=e147]: Surabaya
+  - generic [ref=e148]:
+    - generic [ref=e149]:
+      - paragraph [ref=e150]: Events
+      - heading "Aktivitas yang bikin member balik lagi" [level=2] [ref=e151]
+      - paragraph [ref=e152]: "Contoh format event untuk Reverse: gaming, creative, learning, dan community night."
+    - generic [ref=e153]:
+      - generic [ref=e154]:
+        - heading "Upcoming" [level=3] [ref=e155]
+        - generic [ref=e156]:
+          - article [ref=e157]:
+            - generic [ref=e158]:
+              - generic [ref=e159]: 18 Jun 2026
+              - generic [ref=e160]: Gaming
+            - heading "Reverse Game Night" [level=4] [ref=e161]
+            - paragraph [ref=e162]: Mabar lintas game dengan format mini challenge dan party random buat member baru.
+          - article [ref=e163]:
+            - generic [ref=e164]:
+              - generic [ref=e165]: 25 Jun 2026
+              - generic [ref=e166]: Creative
+            - heading "Creator Showcase Vol. 01" [level=4] [ref=e167]
+            - paragraph [ref=e168]: "Sesi showcase karya: desain, video, stream highlight, music cover, dan project kecil member."
+          - article [ref=e169]:
+            - generic [ref=e170]:
+              - generic [ref=e171]: 02 Jul 2026
+              - generic [ref=e172]: Learning
+            - 'heading "Tech Talk: Build Your First Web Brand" [level=4] [ref=e173]'
+            - paragraph [ref=e174]: Sharing santai soal cara bikin identitas komunitas dan web landing yang terlihat serius.
+      - generic [ref=e175]:
+        - heading "Past" [level=3] [ref=e176]
+        - generic [ref=e177]:
+          - article [ref=e178]:
+            - generic [ref=e179]:
+              - generic [ref=e180]: 08 May 2026
+              - generic [ref=e181]: Community
+            - heading "Reverse Chill Opening" [level=4] [ref=e182]
+            - paragraph [ref=e183]: Opening night buat kenalan, ngobrol, dan mapping minat member awal.
+          - article [ref=e184]:
+            - generic [ref=e185]:
+              - generic [ref=e186]: 15 May 2026
+              - generic [ref=e187]: Music
+            - heading "Music Sharing Session" [level=4] [ref=e188]
+            - paragraph [ref=e189]: Member saling lempar playlist dari lo-fi, J-pop, metal, sampai lagu galau jam 2 pagi.
+  - generic [ref=e190]:
+    - generic [ref=e191]:
+      - paragraph [ref=e192]: Highlights
+      - heading "Gallery / momen komunitas" [level=2] [ref=e193]
+      - paragraph [ref=e194]: Grid ini CMS-ready. Saat ada event asli, tinggal upload foto dan caption dari admin panel.
+    - generic [ref=e195]:
+      - article [ref=e196]:
+        - generic [ref=e198]:
+          - heading "Game Night" [level=3] [ref=e199]
+          - paragraph [ref=e200]: Lobby penuh, suara rame, momen menang bareng.
+      - article [ref=e201]:
+        - generic [ref=e203]:
+          - heading "Study Circle" [level=3] [ref=e204]
+          - paragraph [ref=e205]: Belajar bareng tanpa gaya sok paling pintar.
+      - article [ref=e206]:
+        - generic [ref=e208]:
+          - heading "Music Room" [level=3] [ref=e209]
+          - paragraph [ref=e210]: Playlist member jadi soundtrack malam komunitas.
+      - article [ref=e211]:
+        - generic [ref=e213]:
+          - heading "Creator Wall" [level=3] [ref=e214]
+          - paragraph [ref=e215]: Karya member tampil dan diapresiasi.
+      - article [ref=e216]:
+        - generic [ref=e218]:
+          - heading "Voice Hangout" [level=3] [ref=e219]
+          - paragraph [ref=e220]: Obrolan random yang sering jadi cerita panjang.
+      - article [ref=e221]:
+        - generic [ref=e223]:
+          - heading "Mini Event" [level=3] [ref=e224]
+          - paragraph [ref=e225]: Challenge kecil, hadiah kecil, vibes besar.
+  - generic [ref=e226]:
+    - generic [ref=e227]:
+      - paragraph [ref=e228]: Members
+      - heading "Member showcase" [level=2] [ref=e229]
+      - paragraph [ref=e230]: Spotlight untuk member Reverse. Data ini bisa kamu edit dari CMS saat mode CMS diaktifkan.
+    - generic [ref=e231]:
+      - article [ref=e232]:
+        - generic [ref=e233]: R
+        - heading "Rin" [level=3] [ref=e234]
+        - paragraph [ref=e235]: Mabar Captain · Valorant
+        - paragraph [ref=e236]: “Datang buat mabar, pulang bawa circle.”
+      - article [ref=e237]:
+        - generic [ref=e238]: F
+        - heading "Fai" [level=3] [ref=e239]
+        - paragraph [ref=e240]: Creative Member · Design
+        - paragraph [ref=e241]: “Reverse jadi tempat lempar karya tanpa takut di-judge.”
+      - article [ref=e242]:
+        - generic [ref=e243]: Z
+        - heading "Zen" [level=3] [ref=e244]
+        - paragraph [ref=e245]: Learning Buddy · Web Dev
+        - paragraph [ref=e246]: “Kalau stuck, selalu ada yang bantu debug bareng.”
+  - generic [ref=e247]:
+    - generic [ref=e248]:
+      - paragraph [ref=e249]: Game Stats
+      - heading "Community pulse" [level=2] [ref=e250]
+      - paragraph [ref=e251]: Bar statistik game dan aktivitas komunitas. Untuk MVP masih dummy, nanti editable dari CMS.
+    - generic [ref=e252]:
+      - article [ref=e253]:
+        - paragraph [ref=e254]: 12+
+        - heading "Weekly Mabar" [level=3] [ref=e255]
+        - paragraph [ref=e256]: Sesi mabar lintas game yang bisa diikuti member baru.
+      - article [ref=e257]:
+        - paragraph [ref=e258]: "8"
+        - heading "Active Games" [level=3] [ref=e259]
+        - paragraph [ref=e260]: "Game rotasi komunitas: FPS, sandbox, co-op, MOBA, dan casual."
+      - article [ref=e261]:
+        - paragraph [ref=e262]: "4"
+        - heading "Mini Tournaments" [level=3] [ref=e263]
+        - paragraph [ref=e264]: Format kecil, fun-first, tetap kompetitif secukupnya.
+  - generic [ref=e265]:
+    - generic [ref=e266]:
+      - paragraph [ref=e267]: Merch / Store
+      - heading "Reverse store concept" [level=2] [ref=e268]
+      - paragraph [ref=e269]: Catalog merch awal. Bisa dikelola lewat CMS dan nanti dikembangkan ke checkout atau Discord ticket.
+    - generic [ref=e270]:
+      - article [ref=e271]:
+        - heading "Reverse Tee — Signal Black" [level=3] [ref=e273]
+        - generic [ref=e274]:
+          - generic [ref=e275]: Coming soon
+          - generic [ref=e276]: Concept
+      - article [ref=e277]:
+        - heading "Reverse Sticker Pack" [level=3] [ref=e279]
+        - generic [ref=e280]:
+          - generic [ref=e281]: Coming soon
+          - generic [ref=e282]: Concept
+      - article [ref=e283]:
+        - heading "Community Lanyard" [level=3] [ref=e285]
+        - generic [ref=e286]:
+          - generic [ref=e287]: Coming soon
+          - generic [ref=e288]: Concept
+  - generic [ref=e289]:
+    - generic [ref=e290]:
+      - paragraph [ref=e291]: FAQ
+      - heading "Pertanyaan cepat" [level=2] [ref=e292]
+      - paragraph [ref=e293]: Jawaban singkat untuk member baru dan calon partner.
+    - generic [ref=e294]:
+      - group [ref=e295]:
+        - generic "Reverse Community itu komunitas apa?" [ref=e296] [cursor=pointer]
+      - group [ref=e297]:
+        - generic "Apakah wajib aktif setiap hari?" [ref=e298] [cursor=pointer]
+      - group [ref=e299]:
+        - generic "Bisa ikut event kalau member baru?" [ref=e300] [cursor=pointer]
+      - group [ref=e301]:
+        - generic "Apakah website ini akan punya login member?" [ref=e302] [cursor=pointer]
+      - group [ref=e303]:
+        - generic "Bahasa komunitasnya apa?" [ref=e304] [cursor=pointer]
+  - generic [ref=e306]:
+    - img [ref=e308]
+    - heading "Masuk ke sisi Reverse." [level=2] [ref=e311]
+    - paragraph [ref=e312]: Join the room, meet the people, shape the culture. Komunitas ini dibuat untuk tumbuh pelan tapi kuat.
+    - link "Gabung Discord" [ref=e313] [cursor=pointer]:
+      - /url: https://discord.gg/FpTcm5VYTt
+  - generic [ref=e315]:
+    - paragraph [ref=e316]: Reverse Community — reverse.my.id
+    - generic [ref=e317]:
+      - link "Terms" [ref=e318] [cursor=pointer]:
+        - /url: /terms
+      - link "Privacy" [ref=e319] [cursor=pointer]:
+        - /url: /privacy
+      - link "Guidelines" [ref=e320] [cursor=pointer]:
+        - /url: /community-guidelines
+    - paragraph [ref=e321]: © 2026. Built for community, gaming, and creative growth.

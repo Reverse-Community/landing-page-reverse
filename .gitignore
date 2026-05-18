@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+dist
+build
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+coverage
+payload-types.ts
+.sisyphus
+.playwright-mcp
+.tmp
