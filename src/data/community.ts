@@ -25,7 +25,9 @@ export const siteConfig = {
     { href: "#team", label: "Team", labelEn: "Team" },
     { href: "#members", label: "Members", labelEn: "Members" },
     { href: "#store", label: "Store", labelEn: "Merch" },
-    { href: "#faq", label: "FAQ", labelEn: "FAQ" }
+    { href: "#faq", label: "FAQ", labelEn: "FAQ" },
+    { href: "/bots", label: "Bots", labelEn: "Docs" },
+    { href: "/projects", label: "Projects", labelEn: "Map" }
   ]
 };
 

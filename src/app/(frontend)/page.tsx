@@ -729,6 +729,12 @@ export default async function Home() {
             >
               Guidelines
             </a>
+            <a href="/bots" className="transition hover:text-white">
+              Bots
+            </a>
+            <a href="/projects" className="transition hover:text-white">
+              Projects
+            </a>
           </div>
           <p>© 2026. Built for community, gaming, and creative growth.</p>
         </div>
