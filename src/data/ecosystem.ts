@@ -24,6 +24,7 @@ export type EcosystemStatus = {
   check: string;
   nextStep: string;
   accent: "red" | "blue";
+  heartbeatService?: string;
 };
 
 export const ecosystemServices: EcosystemService[] = [
@@ -153,7 +154,8 @@ export const ecosystemStatuses: EcosystemStatus[] = [
     summary: "Slash commands komunitas sudah modular dan terdaftar untuk Discord.",
     check: "Login bot dan deploy slash command sudah berhasil saat local verification.",
     nextStep: "Kirim heartbeat dan guild snapshot ke website.",
-    accent: "red"
+    accent: "red",
+    heartbeatService: "reverse-discord-bot"
   },
   {
     slug: "whatsapp-bot",
@@ -164,7 +166,8 @@ export const ecosystemStatuses: EcosystemStatus[] = [
     summary: "Command komunitas, website, events, news, dan AI-compatible endpoint sudah siap.",
     check: "Intent tests dan AI smoke test berhasil.",
     nextStep: "Arahkan AI ke Reverse Proxy key khusus dan kirim heartbeat sanitized.",
-    accent: "blue"
+    accent: "blue",
+    heartbeatService: "reverse-wabot"
   },
   {
     slug: "ai-gateway",

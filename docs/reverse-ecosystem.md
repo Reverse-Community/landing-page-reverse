@@ -127,6 +127,20 @@ trader.internal.reverse.my.id   -> trader lab, if ever exposed
 - Let bots send online/version/last-seen status.
 - Let Discord bot send guild snapshot so `/api/discord-stats` can prefer bot data, then fallback to Discord Widget, then fallback to static config.
 
+Initial heartbeat endpoint:
+
+```txt
+POST /api/internal/v1/heartbeat
+Authorization: Bearer {INTERNAL_API_TOKEN}
+```
+
+Allowed services at launch:
+
+```txt
+reverse-discord-bot
+reverse-wabot
+```
+
 ### Phase 4 — CMS event/news bridge
 
 - Website CMS becomes source of truth for events/news.

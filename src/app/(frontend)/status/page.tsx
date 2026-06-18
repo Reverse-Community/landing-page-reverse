@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Activity, LockKeyhole, Radio, ShieldCheck } from "lucide-react";
 import { ecosystemStatuses, statusLegend } from "@/data/ecosystem";
+import { formatHeartbeatAge, isHeartbeatStale, readHeartbeats } from "@/lib/ecosystem-heartbeat";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Reverse Status",
@@ -16,7 +19,8 @@ const stateStyles = {
   planned: "border-yellow-300/20 bg-yellow-300/10 text-yellow-100"
 };
 
-export default function StatusPage() {
+export default async function StatusPage() {
+  const heartbeats = await readHeartbeats();
   const publicCount = ecosystemStatuses.filter((item) => item.state === "online" || item.state === "ready").length;
   const privateCount = ecosystemStatuses.filter((item) => item.state === "private" || item.state === "lab").length;
 
@@ -74,6 +78,13 @@ export default function StatusPage() {
         <section className="grid gap-4 lg:grid-cols-2">
           {ecosystemStatuses.map((item) => (
             <article key={item.slug} className="glass rounded-[2rem] p-6 sm:p-7">
+              {(() => {
+                const heartbeat = item.heartbeatService ? heartbeats[item.heartbeatService] : undefined;
+                const stale = heartbeat ? isHeartbeatStale(heartbeat.receivedAt) : false;
+                const runtimeLabel = heartbeat ? (stale ? "Stale heartbeat" : `${heartbeat.status} · ${formatHeartbeatAge(heartbeat.receivedAt)}`) : "Manual status";
+
+                return (
+                  <>
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <p className={item.accent === "red" ? "text-xs font-black uppercase tracking-[0.24em] text-red-reverse" : "text-xs font-black uppercase tracking-[0.24em] text-blue-reverse"}>
@@ -94,6 +105,10 @@ export default function StatusPage() {
                     <Activity className="h-4 w-4" /> Last known check
                   </p>
                   <p className="mt-2 text-sm leading-6 text-white/70">{item.check}</p>
+                  <p className={stale ? "mt-3 text-sm font-black text-red-reverse" : "mt-3 text-sm font-black text-emerald-200"}>
+                    Runtime: {runtimeLabel}
+                  </p>
+                  {heartbeat?.version ? <p className="mt-1 text-xs font-bold text-white/45">Version: {heartbeat.version}</p> : null}
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                   <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-white/45">
@@ -102,6 +117,9 @@ export default function StatusPage() {
                   <p className="mt-2 text-sm leading-6 text-white/70">{item.nextStep}</p>
                 </div>
               </div>
+                  </>
+                );
+              })()}
             </article>
           ))}
         </section>
