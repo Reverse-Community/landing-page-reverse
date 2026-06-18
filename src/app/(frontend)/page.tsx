@@ -735,6 +735,9 @@ export default async function Home() {
             <a href="/projects" className="transition hover:text-white">
               Projects
             </a>
+            <a href="/status" className="transition hover:text-white">
+              Status
+            </a>
           </div>
           <p>© 2026. Built for community, gaming, and creative growth.</p>
         </div>

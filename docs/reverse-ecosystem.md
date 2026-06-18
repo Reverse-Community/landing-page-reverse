@@ -106,6 +106,7 @@ trader.internal.reverse.my.id   -> trader lab, if ever exposed
 
 - Maintain this document as the source of truth.
 - Add public `/projects` and `/bots` pages to `home-reverse-community`.
+- Add public `/status` page with sanitized service readiness.
 - Keep the content descriptive, not operational.
 
 ### Phase 1 — Community bot commands

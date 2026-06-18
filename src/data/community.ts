@@ -27,7 +27,8 @@ export const siteConfig = {
     { href: "#store", label: "Store", labelEn: "Merch" },
     { href: "#faq", label: "FAQ", labelEn: "FAQ" },
     { href: "/bots", label: "Bots", labelEn: "Docs" },
-    { href: "/projects", label: "Projects", labelEn: "Map" }
+    { href: "/projects", label: "Projects", labelEn: "Map" },
+    { href: "/status", label: "Status", labelEn: "Live" }
   ]
 };
 

@@ -14,6 +14,18 @@ export type EcosystemService = {
   publicLink?: string;
 };
 
+export type EcosystemStatus = {
+  slug: string;
+  name: string;
+  zone: string;
+  state: "online" | "ready" | "private" | "lab" | "planned";
+  visibility: string;
+  summary: string;
+  check: string;
+  nextStep: string;
+  accent: "red" | "blue";
+};
+
 export const ecosystemServices: EcosystemService[] = [
   {
     slug: "community-core",
@@ -119,3 +131,80 @@ export const botCommandRoadmap = [
     commands: ["/help", "/ping", "/ai", "/community", "/website", "/events", "/news"]
   }
 ];
+
+export const ecosystemStatuses: EcosystemStatus[] = [
+  {
+    slug: "community-core",
+    name: "Reverse Community Website",
+    zone: "Public Core",
+    state: "online",
+    visibility: "Public",
+    summary: "Website, CMS shell, ecosystem map, dan bot docs sudah menjadi pusat publik Reverse.",
+    check: "Build verified; route /projects dan /bots tersedia.",
+    nextStep: "Tambahkan heartbeat API agar status bot bisa live.",
+    accent: "blue"
+  },
+  {
+    slug: "discord-bot",
+    name: "Reverse Discord Bot",
+    zone: "Community Bot",
+    state: "ready",
+    visibility: "Discord server",
+    summary: "Slash commands komunitas sudah modular dan terdaftar untuk Discord.",
+    check: "Login bot dan deploy slash command sudah berhasil saat local verification.",
+    nextStep: "Kirim heartbeat dan guild snapshot ke website.",
+    accent: "red"
+  },
+  {
+    slug: "whatsapp-bot",
+    name: "Reverse WhatsApp Bot",
+    zone: "Community Bot",
+    state: "ready",
+    visibility: "WhatsApp private/group",
+    summary: "Command komunitas, website, events, news, dan AI-compatible endpoint sudah siap.",
+    check: "Intent tests dan AI smoke test berhasil.",
+    nextStep: "Arahkan AI ke Reverse Proxy key khusus dan kirim heartbeat sanitized.",
+    accent: "blue"
+  },
+  {
+    slug: "ai-gateway",
+    name: "Reverse AI Gateway",
+    zone: "Internal AI",
+    state: "private",
+    visibility: "Private/internal",
+    summary: "OpenAI-compatible gateway untuk bot dan service internal. Dashboard harus tetap private.",
+    check: "Typecheck, tests, build, dan health endpoint berhasil.",
+    nextStep: "Gunakan dedicated router key per bot.",
+    accent: "red"
+  },
+  {
+    slug: "ops-dashboard",
+    name: "Reverse Ops Dashboard",
+    zone: "Private Ops",
+    state: "private",
+    visibility: "VPN/internal only",
+    summary: "Tool ops high-risk untuk server, Docker, file, dan audit. Tidak ditampilkan sebagai public control plane.",
+    check: "Belum dihubungkan ke public ecosystem demi mengurangi blast radius.",
+    nextStep: "Pastikan private access/VPN sebelum production use.",
+    accent: "blue"
+  },
+  {
+    slug: "trader-lab",
+    name: "Reverse Trader Lab",
+    zone: "Private Lab",
+    state: "lab",
+    visibility: "Private sandbox",
+    summary: "Trading research scaffold safety-first. Hanya dry-run/demo gated, bukan command publik.",
+    check: "Tetap diisolasi dari website public dan bot command.",
+    nextStep: "Jika perlu, publish hanya sanitized educational report.",
+    accent: "red"
+  }
+];
+
+export const statusLegend = {
+  online: "Public online",
+  ready: "Ready for community use",
+  private: "Private/internal only",
+  lab: "Lab/sandbox",
+  planned: "Planned"
+} as const;
