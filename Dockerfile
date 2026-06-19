@@ -20,6 +20,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV RUNNING_IN_DOCKER=true
 ENV PORT=3000
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
+RUN mkdir -p /app/.tmp && chown nextjs:nodejs /app/.tmp
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static

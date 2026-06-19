@@ -102,6 +102,8 @@ trader.internal.reverse.my.id   -> trader lab, if ever exposed
 
 ## Roadmap
 
+Local runbook: see [`docs/local-ecosystem-runbook.md`](./local-ecosystem-runbook.md) for safe startup order, env checklist, smoke tests, and troubleshooting.
+
 ### Phase 0 — Blueprint and public map
 
 - Maintain this document as the source of truth.
@@ -141,11 +143,29 @@ reverse-discord-bot
 reverse-wabot
 ```
 
+Initial Discord guild snapshot endpoint:
+
+```txt
+POST /api/internal/v1/discord/guild-snapshot
+Authorization: Bearer {INTERNAL_API_TOKEN}
+```
+
+Snapshot is sanitized and intended only for public-safe stats such as guild ID, guild name, member count, channel count, and role count.
+
 ### Phase 4 — CMS event/news bridge
 
 - Website CMS becomes source of truth for events/news.
 - Bots can read and announce approved public content.
 - Auto-announcement should be opt-in and rate-limited to avoid spam.
+
+Initial public read endpoints:
+
+```txt
+GET /api/public/events
+GET /api/public/news
+```
+
+These endpoints expose only public-safe title, date/excerpt, tag, description, location, and URL fields. They use CMS data when enabled and static fallback otherwise.
 
 ## Verification checklist before production integration
 

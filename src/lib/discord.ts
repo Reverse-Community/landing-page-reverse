@@ -1,4 +1,5 @@
 import { siteConfig } from "@/data/community";
+import { readFreshDiscordGuildSnapshot } from "@/lib/discord-snapshot";
 
 export type DiscordStats = {
   members: number;
@@ -26,15 +27,34 @@ export async function getDiscordStats(): Promise<DiscordStats> {
     note: "Discord widget belum aktif atau guild ID belum dikonfigurasi."
   };
 
+  const snapshot = await readFreshDiscordGuildSnapshot();
+  if (snapshot?.memberCount) {
+    const widgetStats = guildId ? await getDiscordWidgetStats(guildId, fallback) : null;
+
+    return {
+      members: snapshot.memberCount,
+      online: widgetStats?.online ?? fallback.online,
+      events: fallback.events,
+      invite: widgetStats?.invite ?? fallback.invite,
+      source: "live",
+      note: `Total member dari Reverse Discord Bot${snapshot.guildName ? ` (${snapshot.guildName})` : ""}. Online presence ${widgetStats ? "dari Discord Widget" : "memakai fallback"}.`
+    };
+  }
+
   if (!guildId) return fallback;
 
+  const widgetStats = await getDiscordWidgetStats(guildId, fallback);
+  return widgetStats ?? fallback;
+}
+
+async function getDiscordWidgetStats(guildId: string, fallback: DiscordStats): Promise<DiscordStats | null> {
   try {
     const response = await fetch(`https://discord.com/api/v10/guilds/${guildId}/widget.json`, {
       next: { revalidate: 300 },
       headers: { accept: "application/json" }
     });
 
-    if (!response.ok) return fallback;
+    if (!response.ok) return null;
 
     const data = (await response.json()) as DiscordWidgetResponse;
 
@@ -47,6 +67,6 @@ export async function getDiscordStats(): Promise<DiscordStats> {
       note: "Discord widget hanya menyediakan online presence. Total member memakai fallback sampai bot/API internal ditambahkan."
     };
   } catch {
-    return fallback;
+    return null;
   }
 }
