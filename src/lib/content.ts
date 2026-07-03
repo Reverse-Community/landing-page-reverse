@@ -16,6 +16,7 @@ import {
   siteConfig,
   teamMembers
 } from "@/data/community";
+import { optionalSafeUrl } from "@/lib/safe-url";
 
 export type LandingContent = {
   siteConfig: typeof siteConfig;
@@ -90,7 +91,7 @@ function teamLinks(value: unknown) {
       if (!entry || typeof entry !== "object") return null;
       const doc = entry as CmsDoc;
       const label = optionalText(doc.label);
-      const url = optionalText(doc.url);
+      const url = optionalSafeUrl(doc.url);
       if (!label || !url) return null;
       return { label, url };
     })
@@ -138,7 +139,7 @@ async function loadLandingContentFromCms(): Promise<LandingContent> {
 
   const settingsDoc = settings as CmsDoc;
   const fallbackInvite = fallbackContent.siteConfig.inviteUrl;
-  const discordInvite = optionalText(settingsDoc.discordInviteUrl) ?? fallbackInvite;
+  const discordInvite = optionalSafeUrl(settingsDoc.discordInviteUrl) ?? fallbackInvite;
 
   return {
     ...fallbackContent,
@@ -151,9 +152,9 @@ async function loadLandingContentFromCms(): Promise<LandingContent> {
       },
       socials: {
         discord: discordInvite || "",
-        instagram: optionalText(settingsDoc.instagramUrl) ?? "",
-        youtube: optionalText(settingsDoc.youtubeUrl) ?? "",
-        tiktok: optionalText(settingsDoc.tiktokUrl) ?? ""
+        instagram: optionalSafeUrl(settingsDoc.instagramUrl) ?? "",
+        youtube: optionalSafeUrl(settingsDoc.youtubeUrl) ?? "",
+        tiktok: optionalSafeUrl(settingsDoc.tiktokUrl) ?? ""
       }
     },
     aboutContent: {
@@ -287,7 +288,8 @@ const getCachedLegalPageContent = unstable_cache(
 
     return {
       title: text(doc?.title, fallbackMap[slug].title),
-      description: text(doc?.description, fallbackMap[slug].description)
+      description: text(doc?.description, fallbackMap[slug].description),
+      content: optionalText(doc?.content) ?? fallbackMap[slug].content
     };
   },
   ["legal-page-content"],

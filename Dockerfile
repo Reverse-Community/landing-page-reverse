@@ -19,11 +19,12 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV RUNNING_IN_DOCKER=true
 ENV PORT=3000
+RUN apk add --no-cache su-exec
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
-RUN mkdir -p /app/.tmp && chown nextjs:nodejs /app/.tmp
-COPY --from=builder /app/public ./public
+RUN mkdir -p /app/.tmp /app/public/uploads && chown -R nextjs:nodejs /app/.tmp /app/public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-USER nextjs
 EXPOSE 3000
+ENTRYPOINT ["sh", "-c", "mkdir -p /app/.tmp /app/public/uploads && chown -R nextjs:nodejs /app/.tmp /app/public/uploads && exec su-exec nextjs:nodejs \"$@\"", "--"]
 CMD ["node", "server.js"]

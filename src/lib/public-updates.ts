@@ -103,12 +103,11 @@ const getCachedPublicNewsFromCms = unstable_cache(
 
     return result.docs.map((doc) => {
       const cmsDoc = doc as CmsDoc;
-      const slug = text(cmsDoc.slug, "projects");
       return {
         title: text(cmsDoc.title, "Reverse Update"),
         excerpt: text(cmsDoc.excerpt, "Update terbaru dari Reverse Community."),
         publishedAt: optionalText(cmsDoc.publishedAt) ?? null,
-        url: `${siteUrl()}/posts/${slug}`
+        url: `${siteUrl()}/projects`
       };
     });
   },

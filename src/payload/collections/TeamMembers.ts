@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 
+import { validateRequiredSafeUrl } from "@/lib/safe-url";
 import { revalidateLandingAfterChange, revalidateLandingAfterDelete } from "../hooks/revalidate";
 
 export const TeamMembers: CollectionConfig = {
@@ -23,7 +24,7 @@ export const TeamMembers: CollectionConfig = {
       type: "array",
       fields: [
         { name: "label", type: "text", required: true },
-        { name: "url", type: "text", required: true }
+        { name: "url", type: "text", required: true, validate: validateRequiredSafeUrl }
       ]
     }
   ]

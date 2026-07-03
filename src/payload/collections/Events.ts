@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-import { revalidateLandingAfterChange, revalidateLandingAfterDelete } from "../hooks/revalidate";
+import { revalidateEventsAfterChange, revalidateEventsAfterDelete } from "../hooks/revalidate";
 
 export const Events: CollectionConfig = {
   slug: "events",
@@ -9,8 +9,8 @@ export const Events: CollectionConfig = {
     defaultColumns: ["title", "status", "startsAt"]
   },
   hooks: {
-    afterChange: [revalidateLandingAfterChange],
-    afterDelete: [revalidateLandingAfterDelete]
+    afterChange: [revalidateEventsAfterChange],
+    afterDelete: [revalidateEventsAfterDelete]
   },
   fields: [
     { name: "title", type: "text", required: true },

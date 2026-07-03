@@ -142,6 +142,12 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
+Untuk environment baru atau setelah perubahan schema Payload, jalankan inisialisasi schema dari container:
+
+```bash
+docker compose --profile tools run --rm migrate
+```
+
 Caddy otomatis issue SSL untuk `reverse.my.id` berdasarkan `Caddyfile`.
 
 ## Scripts

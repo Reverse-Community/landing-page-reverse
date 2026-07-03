@@ -1,10 +1,16 @@
 import type { CollectionConfig } from "payload";
 
+import { revalidateNewsAfterChange, revalidateNewsAfterDelete } from "../hooks/revalidate";
+
 export const Posts: CollectionConfig = {
   slug: "posts",
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "publishedAt"]
+  },
+  hooks: {
+    afterChange: [revalidateNewsAfterChange],
+    afterDelete: [revalidateNewsAfterDelete]
   },
   fields: [
     { name: "title", type: "text", required: true },

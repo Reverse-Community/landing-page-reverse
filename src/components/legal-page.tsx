@@ -6,6 +6,30 @@ type LegalPageProps = {
   children: React.ReactNode;
 };
 
+export function PlainLegalContent({ content }: { content: string }) {
+  return (
+    <>
+      {content
+        .split(/\n{2,}/)
+        .map((block) => block.trim())
+        .filter(Boolean)
+        .map((block) => {
+          const [heading, ...bodyLines] = block.split("\n").map((line) => line.trim()).filter(Boolean);
+          const body = bodyLines.join(" ");
+
+          if (!body) return <p key={block}>{heading}</p>;
+
+          return (
+            <section key={block}>
+              <h2>{heading}</h2>
+              <p>{body}</p>
+            </section>
+          );
+        })}
+    </>
+  );
+}
+
 export function LegalPage({ title, description, children }: LegalPageProps) {
   return (
     <main className="min-h-screen bg-base px-5 py-16 text-ink sm:px-8">

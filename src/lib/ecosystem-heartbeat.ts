@@ -1,4 +1,5 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export type HeartbeatStatus = "online" | "degraded" | "offline";
@@ -20,6 +21,7 @@ export type HeartbeatInput = {
 
 const HEARTBEAT_DIR = path.join(process.cwd(), ".tmp");
 const HEARTBEAT_FILE = path.join(HEARTBEAT_DIR, "ecosystem-heartbeats.json");
+const HEARTBEAT_SERVICES_DIR = path.join(HEARTBEAT_DIR, "heartbeats");
 const MAX_DETAIL_KEYS = 8;
 const MAX_DETAIL_VALUE_LENGTH = 120;
 
@@ -42,6 +44,24 @@ export function verifyInternalApiToken(request: Request) {
 }
 
 export async function readHeartbeats(): Promise<Record<string, HeartbeatRecord>> {
+  const legacyRecords = await readLegacyHeartbeats();
+  const serviceRecords = await readServiceHeartbeatFiles();
+  return { ...legacyRecords, ...serviceRecords };
+}
+
+export async function writeHeartbeat(input: HeartbeatInput): Promise<HeartbeatRecord> {
+  const record = validateHeartbeatInput(input);
+
+  await mkdir(HEARTBEAT_SERVICES_DIR, { recursive: true });
+  const targetFile = path.join(HEARTBEAT_SERVICES_DIR, `${record.service}.json`);
+  const tempFile = path.join(HEARTBEAT_SERVICES_DIR, `${record.service}.${randomUUID()}.tmp`);
+  await writeFile(tempFile, `${JSON.stringify(record, null, 2)}\n`, "utf8");
+  await rename(tempFile, targetFile);
+
+  return record;
+}
+
+async function readLegacyHeartbeats(): Promise<Record<string, HeartbeatRecord>> {
   try {
     const raw = await readFile(HEARTBEAT_FILE, "utf8");
     const parsed = JSON.parse(raw) as Record<string, HeartbeatRecord>;
@@ -51,16 +71,23 @@ export async function readHeartbeats(): Promise<Record<string, HeartbeatRecord>>
   }
 }
 
-export async function writeHeartbeat(input: HeartbeatInput): Promise<HeartbeatRecord> {
-  const record = validateHeartbeatInput(input);
-  const heartbeats = await readHeartbeats();
+async function readServiceHeartbeatFiles(): Promise<Record<string, HeartbeatRecord>> {
+  const records: Record<string, HeartbeatRecord> = {};
 
-  heartbeats[record.service] = record;
+  for (const service of ALLOWED_SERVICES) {
+    try {
+      const raw = await readFile(path.join(HEARTBEAT_SERVICES_DIR, `${service}.json`), "utf8");
+      const parsed = JSON.parse(raw) as HeartbeatRecord;
 
-  await mkdir(HEARTBEAT_DIR, { recursive: true });
-  await writeFile(HEARTBEAT_FILE, `${JSON.stringify(heartbeats, null, 2)}\n`, "utf8");
+      if (parsed && parsed.service === service) {
+        records[service] = parsed;
+      }
+    } catch {
+      // Missing or malformed per-service files are ignored so one bad record does not break status reads.
+    }
+  }
 
-  return record;
+  return records;
 }
 
 export function heartbeatAge(receivedAt?: string) {

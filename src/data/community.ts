@@ -223,14 +223,17 @@ export const merchProducts: MerchProduct[] = [
 export const legalPages = {
   terms: {
     title: "Syarat & Ketentuan",
-    description: "Aturan penggunaan website dan partisipasi dasar di ekosistem Reverse Community."
+    description: "Aturan penggunaan website dan partisipasi dasar di ekosistem Reverse Community.",
+    content: "1. Penggunaan Website\nWebsite Reverse Community digunakan sebagai pusat informasi komunitas, event, showcase, merchandise, dan berbagai konten publik lainnya yang berkaitan dengan ekosistem Reverse.\n\n2. Aturan Komunitas\nDengan mengakses website atau bergabung ke komunitas Reverse, pengguna dianggap memahami dan menyetujui aturan komunitas serta kebijakan platform terkait, termasuk Discord dan layanan pihak ketiga lainnya.\n\n3. Konten & Media\nKonten seperti event, highlight komunitas, member showcase, gallery, maupun merchandise dapat diperbarui, diubah, atau dihapus sewaktu-waktu melalui sistem untuk menjaga relevansi dan kualitas informasi.\n\n4. Hak Pengelolaan\nTim Reverse berhak melakukan moderasi, pembaruan konten, pembatasan akses tertentu, atau perubahan fitur demi menjaga keamanan dan kenyamanan komunitas.\n\n5. Perubahan Ketentuan\nSyarat dan ketentuan ini dapat diperbarui sewaktu-waktu mengikuti perkembangan komunitas, fitur website, maupun kebutuhan operasional Reverse Community."
   },
   privacy: {
     title: "Kebijakan Privasi",
-    description: "Ringkasan data yang dipakai website Reverse dan bagaimana data tersebut dilindungi."
+    description: "Ringkasan data yang dipakai website Reverse dan bagaimana data tersebut dilindungi.",
+    content: "Discord & Komunitas\nBeberapa fitur dan tombol pada website akan mengarahkan pengguna ke server Discord Reverse. Aktivitas di Discord sepenuhnya mengikuti kebijakan Discord serta peraturan komunitas Reverse.\n\nPerubahan Kebijakan\nKebijakan privasi ini dapat diperbarui sewaktu-waktu mengikuti perkembangan fitur, layanan, atau kebutuhan komunitas Reverse."
   },
   guidelines: {
     title: "Community Guidelines",
-    description: "Standar perilaku supaya Reverse tetap aman, welcoming, dan nyaman untuk semua member."
+    description: "Standar perilaku supaya Reverse tetap aman, welcoming, dan nyaman untuk semua member.",
+    content: "Be Respectful\nJaga obrolan tetap aman, santai, dan saling menghargai. Hindari harassment, hate speech, spam, dan drama personal.\n\nPlay Fair\nUntuk aktivitas game, gunakan cara bermain yang fair. Cheat, exploit, dan toxic behavior tidak diterima.\n\nKeep It Useful\nGunakan channel sesuai topik. Bantu member baru beradaptasi dan jaga vibe komunitas tetap welcoming.\n\nModeration\nTim Reverse dapat memberi peringatan, timeout, atau ban jika ada pelanggaran serius."
   }
 };
