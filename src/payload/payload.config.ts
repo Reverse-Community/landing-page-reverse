@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { sqliteD1Adapter } from "@payloadcms/db-d1-sqlite";
 import { r2Storage } from "@payloadcms/storage-r2";
 import { buildConfig } from "payload";
@@ -140,7 +139,12 @@ let cloudflarePlugins: any[] = [];
 let cloudflareLoggerConfig: any = undefined;
 
 if (databaseUrl) {
-  // VPS mode: SQLite file via @payloadcms/db-sqlite
+  // VPS mode: SQLite file via @payloadcms/db-sqlite.
+  // Keep this import fully opaque so Cloudflare/OpenNext does not bundle @libsql/client.
+  const importRuntime = new Function("specifier", "return import(specifier)") as (
+    specifier: string
+  ) => Promise<typeof import("@payloadcms/db-sqlite")>;
+  const { sqliteAdapter } = await importRuntime("@payloadcms/db-sqlite");
   db = sqliteAdapter({
     client: {
       url: databaseUrl
