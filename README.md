@@ -34,7 +34,7 @@ Proyek ini mendukung **dua mode deployment** yang dipilih otomatis dari environm
 | Mode | `DATABASE_URL` | Database | Storage | Deploy dengan |
 |------|---------------|----------|---------|--------------|
 | **VPS** (Node.js) | `file:./data.db` | SQLite file (`@payloadcms/db-sqlite`) | `public/uploads/` | `docker compose up -d --build` |
-| **Cloudflare** | tidak diset | D1 (`@payloadcms/db-d1-sqlite`) | static assets/external media; R2 hanya untuk OpenNext cache | `opennextjs-cloudflare build && wrangler deploy` |
+| **Cloudflare** | tidak diset | D1 (`@payloadcms/db-d1-sqlite`) | static assets/external media; no R2 | `opennextjs-cloudflare build && wrangler deploy` |
 
 > **Migration dari PostgreSQL:** Versi sebelumnya menggunakan PostgreSQL. Sekarang sudah migrasi penuh ke SQLite/D1. Jika masih memiliki data PostgreSQL, ekspor ke SQLite sebelum upgrade.
 
@@ -101,7 +101,7 @@ NEXT_PUBLIC_UMAMI_SCRIPT_URL=
 NEXT_PUBLIC_UMAMI_WEBSITE_ID=
 ```
 
-> **Catatan:** Database (D1), KV, dan R2 cache OpenNext dikonfigurasi via binding di `wrangler.jsonc`, bukan `.env`. Payload media upload R2 sengaja tidak dipakai. Jalankan `npm run cf-typegen` setelah mengubah binding.
+> **Catatan:** Database (D1) dan KV dikonfigurasi via binding di `wrangler.jsonc`, bukan `.env`. R2 sengaja tidak dipakai. Jalankan `npm run cf-typegen` setelah mengubah binding.
 
 ## VPS Docker deploy
 
@@ -151,7 +151,7 @@ Ini akan:
 
 - Akun Cloudflare dengan domain `reverse.my.id`
 - Wrangler CLI terinstall (`npm install -g wrangler` atau via `npx`)
-- D1 database + KV namespace + R2 bucket cache sudah dibuat (lihat wrangler.jsonc)
+- D1 database + KV namespace sudah dibuat (lihat wrangler.jsonc)
 
 ### Setup Cloudflare resources
 
@@ -165,15 +165,12 @@ npx wrangler d1 create reverse-community-db
 # Buat KV namespace untuk heartbeat/snapshot (sekali saja)
 npx wrangler kv namespace create REVERSE_KV
 
-# Buat R2 bucket hanya untuk OpenNext cache (sekali saja)
-npx wrangler r2 bucket create reverse-community-cache
-
 # Update binding IDs di wrangler.jsonc dengan hasil output di atas
 # lalu regenerate types:
 npm run cf-typegen
 ```
 
-> **Catatan:** Binding IDs di `wrangler.jsonc` harus memakai ID asli dari `wrangler d1 create` dan `wrangler kv namespace create`. R2 cache cukup memakai nama bucket.
+> **Catatan:** Binding IDs di `wrangler.jsonc` harus memakai ID asli dari `wrangler d1 create` dan `wrangler kv namespace create`.
 
 ### Deploy
 

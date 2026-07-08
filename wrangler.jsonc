@@ -26,12 +26,6 @@
 			"remote": true
 		}
 	],
-	"r2_buckets": [
-		{
-			"binding": "NEXT_INC_CACHE_R2_BUCKET",
-			"bucket_name": "reverse-community-cache"
-		}
-	],
 	"services": [
 		{
 			"binding": "WORKER_SELF_REFERENCE",
@@ -56,12 +50,6 @@
 				{
 					"binding": "REVERSE_KV",
 					"id": "6ab6620685274c84b8adef8f4ba02792"
-				}
-			],
-			"r2_buckets": [
-				{
-					"binding": "NEXT_INC_CACHE_R2_BUCKET",
-					"bucket_name": "reverse-community-cache"
 				}
 			],
 			"services": [
