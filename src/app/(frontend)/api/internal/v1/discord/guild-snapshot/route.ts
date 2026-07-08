@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { isHeartbeatEnabled, verifyInternalApiToken } from "@/lib/ecosystem-heartbeat";
 import { readDiscordGuildSnapshot, writeDiscordGuildSnapshot } from "@/lib/discord-snapshot";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {

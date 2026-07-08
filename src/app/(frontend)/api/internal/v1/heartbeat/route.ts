@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { isHeartbeatEnabled, readHeartbeats, verifyInternalApiToken, writeHeartbeat } from "@/lib/ecosystem-heartbeat";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {

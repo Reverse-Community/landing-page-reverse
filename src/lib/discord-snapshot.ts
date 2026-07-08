@@ -20,18 +20,73 @@ export type DiscordGuildSnapshotInput = {
   capturedAt?: unknown;
 };
 
-const SNAPSHOT_DIR = path.join(process.cwd(), ".tmp");
-const SNAPSHOT_FILE = path.join(SNAPSHOT_DIR, "discord-guild-snapshot.json");
+const KV_KEY = "discord:guild-snapshot";
 const MAX_SNAPSHOT_AGE_MS = 10 * 60 * 1000;
 
-export async function readDiscordGuildSnapshot(): Promise<DiscordGuildSnapshot | null> {
+// ---- KV helpers for Cloudflare Workers ----
+
+function getKvNamespace(): KVNamespace | undefined {
+  return process.env.REVERSE_KV as unknown as KVNamespace | undefined;
+}
+
+async function kvWrite(value: DiscordGuildSnapshot): Promise<void> {
+  try {
+    const kv = getKvNamespace();
+    if (kv) {
+      await kv.put(KV_KEY, JSON.stringify(value));
+      return;
+    }
+  } catch {
+    // Fall through
+  }
+  // Fallback to local file
+  await legacyWrite(value);
+}
+
+async function kvRead(): Promise<DiscordGuildSnapshot | null> {
+  try {
+    const kv = getKvNamespace();
+    if (kv) {
+      const raw = await kv.get(KV_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as DiscordGuildSnapshot;
+        return parsed && typeof parsed === "object" && typeof parsed.guildId === "string"
+          ? parsed
+          : null;
+      }
+    }
+  } catch {
+    // Fall through
+  }
+  return null;
+}
+
+// ---- Legacy filesystem fallback ----
+
+const SNAPSHOT_DIR = path.join(process.cwd(), ".tmp");
+const SNAPSHOT_FILE = path.join(SNAPSHOT_DIR, "discord-guild-snapshot.json");
+
+async function legacyWrite(snapshot: DiscordGuildSnapshot): Promise<void> {
+  await mkdir(SNAPSHOT_DIR, { recursive: true });
+  await writeFile(SNAPSHOT_FILE, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
+}
+
+async function legacyRead(): Promise<DiscordGuildSnapshot | null> {
   try {
     const raw = await readFile(SNAPSHOT_FILE, "utf8");
     const parsed = JSON.parse(raw) as DiscordGuildSnapshot;
-    return parsed && typeof parsed === "object" && typeof parsed.guildId === "string" ? parsed : null;
+    return parsed && typeof parsed === "object" && typeof parsed.guildId === "string"
+      ? parsed
+      : null;
   } catch {
     return null;
   }
+}
+
+// ---- Public API ----
+
+export async function readDiscordGuildSnapshot(): Promise<DiscordGuildSnapshot | null> {
+  return kvRead();
 }
 
 export async function readFreshDiscordGuildSnapshot(maxAgeMs = MAX_SNAPSHOT_AGE_MS) {
@@ -46,10 +101,7 @@ export async function readFreshDiscordGuildSnapshot(maxAgeMs = MAX_SNAPSHOT_AGE_
 
 export async function writeDiscordGuildSnapshot(input: DiscordGuildSnapshotInput): Promise<DiscordGuildSnapshot> {
   const snapshot = validateSnapshotInput(input);
-
-  await mkdir(SNAPSHOT_DIR, { recursive: true });
-  await writeFile(SNAPSHOT_FILE, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
-
+  await kvWrite(snapshot);
   return snapshot;
 }
 

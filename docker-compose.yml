@@ -4,11 +4,9 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
-      DATABASE_URL: postgres://reverse:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/reverse
-    depends_on:
-      postgres:
-        condition: service_healthy
+      DATABASE_URL: file:./data/reverse-community.db
     volumes:
+      - sqlite_data:/app/data
       - uploads:/app/public/uploads
     networks:
       - reverse
@@ -21,28 +19,10 @@ services:
       - tools
     env_file: .env
     environment:
-      DATABASE_URL: postgres://reverse:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/reverse
-    command: npm run db:push
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - reverse
-
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: reverse
-      POSTGRES_USER: reverse
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      DATABASE_URL: file:./data/reverse-community.db
+    command: ["npm", "run", "migrate"]
     volumes:
-      - pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U reverse -d reverse"]
-      interval: 5s
-      timeout: 5s
-      retries: 12
+      - sqlite_data:/app/data
     networks:
       - reverse
 
@@ -65,7 +45,7 @@ networks:
   reverse:
 
 volumes:
-  pg_data:
+  sqlite_data:
   uploads:
   caddy_data:
   caddy_config:

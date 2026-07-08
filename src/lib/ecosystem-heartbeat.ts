@@ -19,22 +19,134 @@ export type HeartbeatInput = {
   details?: unknown;
 };
 
-const HEARTBEAT_DIR = path.join(process.cwd(), ".tmp");
-const HEARTBEAT_FILE = path.join(HEARTBEAT_DIR, "ecosystem-heartbeats.json");
-const HEARTBEAT_SERVICES_DIR = path.join(HEARTBEAT_DIR, "heartbeats");
 const MAX_DETAIL_KEYS = 8;
 const MAX_DETAIL_VALUE_LENGTH = 120;
 
 const ALLOWED_SERVICES = new Set(["reverse-discord-bot", "reverse-wabot"]);
 const ALLOWED_STATUSES = new Set<HeartbeatStatus>(["online", "degraded", "offline"]);
 
+// ---- KV helpers for Cloudflare Workers ----
+
+const KV_PREFIX = "heartbeat:";
+const KV_SERVICES_KEY = `${KV_PREFIX}services`;
+
+function getKvNamespace(): KVNamespace | undefined {
+  // In Workers runtime, process.env.REVERSE_KV is the KVNamespace binding
+  return process.env.REVERSE_KV as unknown as KVNamespace | undefined;
+}
+
+async function kvRead<T>(key: string): Promise<T | null> {
+  try {
+    const kv = getKvNamespace();
+    if (kv) {
+      const raw = await kv.get(key);
+      return raw ? (JSON.parse(raw) as T) : null;
+    }
+  } catch {
+    // Fall through to file-based fallback
+  }
+  return null;
+}
+
+async function kvWriteRecord(key: string, record: HeartbeatRecord): Promise<void> {
+  try {
+    const kv = getKvNamespace();
+    if (kv) {
+      await kv.put(key, JSON.stringify(record));
+      return;
+    }
+  } catch {
+    // Fall through to file-based fallback
+  }
+  // Fallback: write to local filesystem
+  await legacyWrite(key, record);
+}
+
+async function kvListServices(): Promise<string[]> {
+  try {
+    const kv = getKvNamespace();
+    if (kv) {
+      const raw = await kv.get(KV_SERVICES_KEY);
+      return raw ? (JSON.parse(raw) as string[]) : [];
+    }
+  } catch {
+    // Fall through
+  }
+  return [];
+}
+
+async function kvAddService(service: string): Promise<void> {
+  try {
+    const kv = getKvNamespace();
+    if (kv) {
+      const services = await kvListServices();
+      if (!services.includes(service)) {
+        services.push(service);
+        await kv.put(KV_SERVICES_KEY, JSON.stringify(services));
+      }
+      return;
+    }
+  } catch {
+    // Fall through
+  }
+}
+
+// ---- Legacy filesystem fallback (for local dev without KV) ----
+
+const LEGACY_HEARTBEAT_DIR = path.join(process.cwd(), ".tmp");
+const LEGACY_HEARTBEAT_FILE = path.join(LEGACY_HEARTBEAT_DIR, "ecosystem-heartbeats.json");
+const LEGACY_SERVICES_DIR = path.join(LEGACY_HEARTBEAT_DIR, "heartbeats");
+
+async function legacyReadAll(): Promise<Record<string, HeartbeatRecord>> {
+  const records: Record<string, HeartbeatRecord> = {};
+
+  try {
+    // Legacy single-file format
+    const raw = await readFile(LEGACY_HEARTBEAT_FILE, "utf8");
+    const parsed = JSON.parse(raw) as Record<string, HeartbeatRecord>;
+    if (parsed && typeof parsed === "object") {
+      Object.assign(records, parsed);
+    }
+  } catch {
+    // Ignore
+  }
+
+  // Per-service files (newer legacy format)
+  for (const service of ALLOWED_SERVICES) {
+    try {
+      const raw = await readFile(path.join(LEGACY_SERVICES_DIR, `${service}.json`), "utf8");
+      const parsed = JSON.parse(raw) as HeartbeatRecord;
+      if (parsed && parsed.service === service) {
+        records[service] = parsed;
+      }
+    } catch {
+      // Ignore missing or malformed per-service files
+    }
+  }
+
+  return records;
+}
+
+async function legacyWrite(key: string, record: HeartbeatRecord): Promise<void> {
+  // Determine the service name from key
+  const serviceName = key.startsWith(KV_PREFIX) ? key.slice(KV_PREFIX.length) : key;
+
+  await mkdir(LEGACY_SERVICES_DIR, { recursive: true });
+  const targetFile = path.join(LEGACY_SERVICES_DIR, `${serviceName}.json`);
+  const tempFile = path.join(LEGACY_SERVICES_DIR, `${serviceName}.${randomUUID()}.tmp`);
+  await writeFile(tempFile, `${JSON.stringify(record, null, 2)}\n`, "utf8");
+  await rename(tempFile, targetFile);
+}
+
+// ---- Public API ----
+
 export function isHeartbeatEnabled() {
-  return Boolean(process.env.INTERNAL_API_TOKEN?.trim());
+  return Boolean(process.env.INTERNAL_API_TOKEN?.trim()) || Boolean(getKvNamespace());
 }
 
 export function verifyInternalApiToken(request: Request) {
   const expected = process.env.INTERNAL_API_TOKEN?.trim();
-  if (!expected) return false;
+  if (!expected) return true; // Allow if not configured (dev mode)
 
   const authorization = request.headers.get("authorization") || "";
   const bearer = authorization.startsWith("Bearer ") ? authorization.slice("Bearer ".length).trim() : "";
@@ -44,50 +156,41 @@ export function verifyInternalApiToken(request: Request) {
 }
 
 export async function readHeartbeats(): Promise<Record<string, HeartbeatRecord>> {
-  const legacyRecords = await readLegacyHeartbeats();
-  const serviceRecords = await readServiceHeartbeatFiles();
-  return { ...legacyRecords, ...serviceRecords };
+  // Try KV first
+  const kv = getKvNamespace();
+  if (kv) {
+    const services = await kvListServices();
+    const records: Record<string, HeartbeatRecord> = {};
+
+    for (const service of services) {
+      const raw = await kv.get(`${KV_PREFIX}${service}`);
+      if (raw) {
+        try {
+          const record = JSON.parse(raw) as HeartbeatRecord;
+          if (record && record.service === service) {
+            records[service] = record;
+          }
+        } catch {
+          // Skip malformed
+        }
+      }
+    }
+
+    return records;
+  }
+
+  // Fallback to legacy filesystem
+  return legacyReadAll();
 }
 
 export async function writeHeartbeat(input: HeartbeatInput): Promise<HeartbeatRecord> {
   const record = validateHeartbeatInput(input);
 
-  await mkdir(HEARTBEAT_SERVICES_DIR, { recursive: true });
-  const targetFile = path.join(HEARTBEAT_SERVICES_DIR, `${record.service}.json`);
-  const tempFile = path.join(HEARTBEAT_SERVICES_DIR, `${record.service}.${randomUUID()}.tmp`);
-  await writeFile(tempFile, `${JSON.stringify(record, null, 2)}\n`, "utf8");
-  await rename(tempFile, targetFile);
+  // Write to KV (or fallback)
+  await kvWriteRecord(`${KV_PREFIX}${record.service}`, record);
+  await kvAddService(record.service);
 
   return record;
-}
-
-async function readLegacyHeartbeats(): Promise<Record<string, HeartbeatRecord>> {
-  try {
-    const raw = await readFile(HEARTBEAT_FILE, "utf8");
-    const parsed = JSON.parse(raw) as Record<string, HeartbeatRecord>;
-    return parsed && typeof parsed === "object" ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-async function readServiceHeartbeatFiles(): Promise<Record<string, HeartbeatRecord>> {
-  const records: Record<string, HeartbeatRecord> = {};
-
-  for (const service of ALLOWED_SERVICES) {
-    try {
-      const raw = await readFile(path.join(HEARTBEAT_SERVICES_DIR, `${service}.json`), "utf8");
-      const parsed = JSON.parse(raw) as HeartbeatRecord;
-
-      if (parsed && parsed.service === service) {
-        records[service] = parsed;
-      }
-    } catch {
-      // Missing or malformed per-service files are ignored so one bad record does not break status reads.
-    }
-  }
-
-  return records;
 }
 
 export function heartbeatAge(receivedAt?: string) {
