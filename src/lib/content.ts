@@ -1,6 +1,4 @@
-import config from "@payload-config";
 import { unstable_cache } from "next/cache";
-import { getPayload } from "payload";
 import {
   events,
   aboutContent,
@@ -16,6 +14,7 @@ import {
   siteConfig,
   teamMembers
 } from "@/data/community";
+import { getCmsPayload } from "@/lib/payload-runtime";
 import { optionalSafeUrl } from "@/lib/safe-url";
 
 export type LandingContent = {
@@ -126,7 +125,7 @@ function shouldUseCmsContent() {
 }
 
 async function loadLandingContentFromCms(): Promise<LandingContent> {
-  const payload = await getPayload({ config });
+  const payload = await getCmsPayload();
   const [settings, team, cmsEvents, highlights, members, stats, products] = await Promise.all([
     payload.findGlobal({ slug: "site-settings", depth: 1 }),
     payload.find({ collection: "team-members", limit: 40, sort: "sortOrder", depth: 2 }),
@@ -274,7 +273,7 @@ const getCachedLegalPageContent = unstable_cache(
       "community-guidelines": fallbackContent.legalPages.guidelines
     };
 
-    const payload = await getPayload({ config });
+    const payload = await getCmsPayload();
     const result = await payload.find({
       collection: "legal-pages",
       limit: 1,

@@ -1,7 +1,6 @@
-import config from "@payload-config";
 import { unstable_cache } from "next/cache";
-import { getPayload } from "payload";
 import { events } from "@/data/community";
+import { getCmsPayload } from "@/lib/payload-runtime";
 
 type CmsDoc = Record<string, unknown>;
 
@@ -67,7 +66,7 @@ function fallbackNews(): PublicNewsItem[] {
 
 const getCachedPublicEventsFromCms = unstable_cache(
   async (): Promise<PublicEventItem[]> => {
-    const payload = await getPayload({ config });
+    const payload = await getCmsPayload();
     const result = await payload.find({
       collection: "events",
       limit: 5,
@@ -94,7 +93,7 @@ const getCachedPublicEventsFromCms = unstable_cache(
 
 const getCachedPublicNewsFromCms = unstable_cache(
   async (): Promise<PublicNewsItem[]> => {
-    const payload = await getPayload({ config });
+    const payload = await getCmsPayload();
     const result = await payload.find({
       collection: "posts",
       limit: 5,
