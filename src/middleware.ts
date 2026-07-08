@@ -44,7 +44,7 @@ async function secureEqual(a: string, b: string) {
   return diff === 0 && a.length === b.length;
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   if (process.env.ADMIN_BASIC_AUTH_DISABLED === "true") return NextResponse.next();
 
   const user = process.env.ADMIN_BASIC_USER;
