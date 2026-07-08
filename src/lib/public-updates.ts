@@ -2,8 +2,6 @@ import { unstable_cache } from "next/cache";
 import { events } from "@/data/community";
 import { getCmsPayload } from "@/lib/payload-runtime";
 
-type CmsDoc = Record<string, unknown>;
-
 export type PublicEventItem = {
   title: string;
   date: string;
@@ -74,15 +72,14 @@ const getCachedPublicEventsFromCms = unstable_cache(
       where: { status: { equals: "upcoming" } }
     });
 
-    return result.docs.map((doc) => {
-      const cmsDoc = doc as CmsDoc;
-      const slug = text(cmsDoc.slug, "#events");
+    return result.docs.map((doc: Record<string, unknown>) => {
+      const slug = text(doc.slug, "#events");
       return {
-        title: text(cmsDoc.title, "Reverse Event"),
-        date: text(cmsDoc.displayDate, "Soon"),
-        tag: text(cmsDoc.tag, "Event"),
-        description: text(cmsDoc.description, "Event komunitas Reverse."),
-        location: optionalText(cmsDoc.location) ?? null,
+        title: text(doc.title, "Reverse Event"),
+        date: text(doc.displayDate, "Soon"),
+        tag: text(doc.tag, "Event"),
+        description: text(doc.description, "Event komunitas Reverse."),
+        location: optionalText(doc.location) ?? null,
         url: `${siteUrl()}/#events${slug && slug !== "#events" ? `-${slug}` : ""}`
       };
     });
@@ -100,12 +97,11 @@ const getCachedPublicNewsFromCms = unstable_cache(
       sort: "-publishedAt"
     });
 
-    return result.docs.map((doc) => {
-      const cmsDoc = doc as CmsDoc;
+    return result.docs.map((doc: Record<string, unknown>) => {
       return {
-        title: text(cmsDoc.title, "Reverse Update"),
-        excerpt: text(cmsDoc.excerpt, "Update terbaru dari Reverse Community."),
-        publishedAt: optionalText(cmsDoc.publishedAt) ?? null,
+        title: text(doc.title, "Reverse Update"),
+        excerpt: text(doc.excerpt, "Update terbaru dari Reverse Community."),
+        publishedAt: optionalText(doc.publishedAt) ?? null,
         url: `${siteUrl()}/projects`
       };
     });

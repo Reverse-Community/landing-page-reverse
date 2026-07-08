@@ -140,6 +140,63 @@ async function loadLandingContentFromCms(): Promise<LandingContent> {
   const fallbackInvite = fallbackContent.siteConfig.inviteUrl;
   const discordInvite = optionalSafeUrl(settingsDoc.discordInviteUrl) ?? fallbackInvite;
 
+  function mapTeamMember(doc: Record<string, unknown>, index: number) {
+    return {
+      name: text(doc.name, "Member"),
+      role: text(doc.role, "Team"),
+      city: text(doc.city, "Indonesia"),
+      accent: (index % 2 === 0 ? "red" : "blue") as "red" | "blue",
+      imageUrl: mediaUrl(doc.photo) ?? null,
+      links: teamLinks(doc.links)
+    };
+  }
+
+  function mapEvent(doc: Record<string, unknown>, status: string) {
+    return {
+      date: text(doc.displayDate, status === "past" ? "Past" : "Soon"),
+      title: text(doc.title, "Reverse Event"),
+      tag: text(doc.tag, "Event"),
+      description: text(doc.description, "Event komunitas Reverse."),
+      location: optionalText(doc.location) ?? null,
+      imageUrl: mediaUrl(doc.cover) ?? null
+    };
+  }
+
+  function mapHighlight(doc: Record<string, unknown>) {
+    return {
+      title: text(doc.title, "Highlight"),
+      caption: text(doc.caption, "Momen komunitas Reverse."),
+      imageUrl: mediaUrl(doc.image) ?? null
+    };
+  }
+
+  function mapMemberShowcase(doc: Record<string, unknown>) {
+    return {
+      name: text(doc.name, "Member"),
+      role: text(doc.role, "Member"),
+      game: text(doc.favoriteGame, "Community"),
+      quote: text(doc.quote, "Proud member of Reverse."),
+      imageUrl: mediaUrl(doc.avatar) ?? null
+    };
+  }
+
+  function mapGameStat(doc: Record<string, unknown>) {
+    return {
+      label: text(doc.label, "Metric"),
+      value: text(doc.value, "0"),
+      description: text(doc.description, "Stat komunitas.")
+    };
+  }
+
+  function mapProduct(doc: Record<string, unknown>) {
+    return {
+      name: text(doc.name, "Product"),
+      price: text(doc.price, "Coming soon"),
+      status: text(doc.status, "Concept"),
+      imageUrl: mediaUrl(doc.image) ?? null
+    };
+  }
+
   return {
     ...fallbackContent,
     siteConfig: {
@@ -160,92 +217,17 @@ async function loadLandingContentFromCms(): Promise<LandingContent> {
       title: text(settingsDoc.aboutTitle, fallbackContent.aboutContent.title),
       body: text(settingsDoc.aboutBody, fallbackContent.aboutContent.body)
     },
-    teamMembers: team.docs.length
-      ? team.docs.map((doc, index) => {
-          const cmsDoc = doc as CmsDoc;
-          return {
-            name: text(cmsDoc.name, "Member"),
-            role: text(cmsDoc.role, "Team"),
-            city: text(cmsDoc.city, "Indonesia"),
-            accent: (index % 2 === 0 ? "red" : "blue") as "red" | "blue",
-            imageUrl: mediaUrl(cmsDoc.photo) ?? null,
-            links: teamLinks(cmsDoc.links)
-          };
-        })
-      : fallbackContent.teamMembers,
+    teamMembers: team.docs.length ? team.docs.map((doc: Record<string, unknown>, index: number) => mapTeamMember(doc, index)) : fallbackContent.teamMembers,
     events: cmsEvents.docs.length
       ? {
-          upcoming: cmsEvents.docs
-            .filter((doc) => (doc as CmsDoc).status !== "past")
-            .map((doc) => {
-              const cmsDoc = doc as CmsDoc;
-              return {
-                date: text(cmsDoc.displayDate, "Soon"),
-                title: text(cmsDoc.title, "Reverse Event"),
-                tag: text(cmsDoc.tag, "Event"),
-                description: text(cmsDoc.description, "Event komunitas Reverse."),
-                location: optionalText(cmsDoc.location) ?? null,
-                imageUrl: mediaUrl(cmsDoc.cover) ?? null
-              };
-            }),
-          past: cmsEvents.docs
-            .filter((doc) => (doc as CmsDoc).status === "past")
-            .map((doc) => {
-              const cmsDoc = doc as CmsDoc;
-              return {
-                date: text(cmsDoc.displayDate, "Past"),
-                title: text(cmsDoc.title, "Reverse Event"),
-                tag: text(cmsDoc.tag, "Event"),
-                description: text(cmsDoc.description, "Event komunitas Reverse."),
-                location: optionalText(cmsDoc.location) ?? null,
-                imageUrl: mediaUrl(cmsDoc.cover) ?? null
-              };
-            })
+          upcoming: cmsEvents.docs.filter((doc: Record<string, unknown>) => doc.status !== "past").map((doc: Record<string, unknown>) => mapEvent(doc, "upcoming")),
+          past: cmsEvents.docs.filter((doc: Record<string, unknown>) => doc.status === "past").map((doc: Record<string, unknown>) => mapEvent(doc, "past"))
         }
       : fallbackContent.events,
-    gallery: highlights.docs.length
-      ? highlights.docs.map((doc) => {
-          const cmsDoc = doc as CmsDoc;
-          return {
-            title: text(cmsDoc.title, "Highlight"),
-            caption: text(cmsDoc.caption, "Momen komunitas Reverse."),
-            imageUrl: mediaUrl(cmsDoc.image) ?? null
-          };
-        })
-      : fallbackContent.gallery,
-    memberShowcase: members.docs.length
-      ? members.docs.map((doc) => {
-          const cmsDoc = doc as CmsDoc;
-          return {
-            name: text(cmsDoc.name, "Member"),
-            role: text(cmsDoc.role, "Member"),
-            game: text(cmsDoc.favoriteGame, "Community"),
-            quote: text(cmsDoc.quote, "Proud member of Reverse."),
-            imageUrl: mediaUrl(cmsDoc.avatar) ?? null
-          };
-        })
-      : fallbackContent.memberShowcase,
-    gameStats: stats.docs.length
-      ? stats.docs.map((doc) => {
-          const cmsDoc = doc as CmsDoc;
-          return {
-            label: text(cmsDoc.label, "Metric"),
-            value: text(cmsDoc.value, "0"),
-            description: text(cmsDoc.description, "Stat komunitas.")
-          };
-        })
-      : fallbackContent.gameStats,
-    merchProducts: products.docs.length
-      ? products.docs.map((doc) => {
-          const cmsDoc = doc as CmsDoc;
-          return {
-            name: text(cmsDoc.name, "Product"),
-            price: text(cmsDoc.price, "Coming soon"),
-            status: text(cmsDoc.status, "Concept"),
-            imageUrl: mediaUrl(cmsDoc.image) ?? null
-          };
-        })
-      : fallbackContent.merchProducts
+    gallery: highlights.docs.length ? highlights.docs.map((doc: Record<string, unknown>) => mapHighlight(doc)) : fallbackContent.gallery,
+    memberShowcase: members.docs.length ? members.docs.map((doc: Record<string, unknown>) => mapMemberShowcase(doc)) : fallbackContent.memberShowcase,
+    gameStats: stats.docs.length ? stats.docs.map((doc: Record<string, unknown>) => mapGameStat(doc)) : fallbackContent.gameStats,
+    merchProducts: products.docs.length ? products.docs.map((doc: Record<string, unknown>) => mapProduct(doc)) : fallbackContent.merchProducts
   };
 }
 
