@@ -31,7 +31,7 @@ const isNextBuild = process.env.NEXT_PHASE === "phase-production-build";
  * - VPS mode: set DATABASE_URL to a SQLite file path (e.g. "file:./reverse-community.db")
  * - Cloudflare mode: unset DATABASE_URL, uses D1 binding + R2 storage
  */
-const isVpsMode = Boolean(process.env.DATABASE_URL);
+const databaseUrl = process.env.DATABASE_URL;
 
 function envOrThrow(name: string) {
   const value = process.env[name];
@@ -139,11 +139,11 @@ let db: any;
 let cloudflarePlugins: any[] = [];
 let cloudflareLoggerConfig: any = undefined;
 
-if (isVpsMode) {
+if (databaseUrl) {
   // VPS mode: SQLite file via @payloadcms/db-sqlite
   db = sqliteAdapter({
     client: {
-      url: process.env.DATABASE_URL
+      url: databaseUrl
     }
   });
   // No R2 storage — Media collection uses local staticDir (public/uploads/)
