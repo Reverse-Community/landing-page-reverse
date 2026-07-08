@@ -49,10 +49,9 @@ DATABASE_URL=file:./data/reverse-community.db
 # Payload CMS secret
 PAYLOAD_SECRET=change-this-to-a-long-random-secret
 
-# Admin basic auth
-ADMIN_BASIC_USER=admin
-ADMIN_BASIC_PASSWORD=change-this-admin-gate-password
-# Set ADMIN_BASIC_AUTH_DISABLED=true untuk local dev (jangan di production)
+# Admin protection
+# Payload CMS sudah punya login sendiri.
+# Untuk proteksi tambahan di production, gunakan Cloudflare Access atau reverse-proxy auth.
 
 # Discord
 NEXT_PUBLIC_SITE_URL=https://reverse.my.id
@@ -82,9 +81,9 @@ CLOUDFLARE_ENV=production
 # Payload CMS secret
 PAYLOAD_SECRET=change-this-to-a-long-random-secret
 
-# Admin basic auth
-ADMIN_BASIC_USER=admin
-ADMIN_BASIC_PASSWORD=change-this-admin-gate-password
+# Admin protection
+# Payload CMS sudah punya login sendiri.
+# Untuk proteksi tambahan di Cloudflare, gunakan Cloudflare Access di /admin/*.
 
 # Discord
 NEXT_PUBLIC_SITE_URL=https://reverse.my.id
@@ -261,14 +260,14 @@ npm run migrate:fresh
 
 ## Admin protection
 
-`/admin` punya dua lapis proteksi:
+`/admin` dilindungi oleh **Payload CMS login** (`Users` collection).
 
-1. **Basic Auth** middleware via env: `ADMIN_BASIC_USER` dan `ADMIN_BASIC_PASSWORD`
-2. **Login Payload CMS** (`Users` collection)
+Untuk production, disarankan tambah proteksi di level platform:
 
-Jika `ADMIN_BASIC_USER` atau `ADMIN_BASIC_PASSWORD` kosong, `/admin` akan mengembalikan error konfigurasi. Ini sengaja supaya admin tidak pernah terbuka tanpa gate password.
+- **Cloudflare:** gunakan Cloudflare Access untuk path `/admin/*`
+- **VPS/Caddy:** tambahkan basic auth di `Caddyfile` jika ingin gate sebelum Payload login
 
-Untuk lokal saja, kamu bisa set `ADMIN_BASIC_AUTH_DISABLED=true` agar proxy melewati Basic Auth. Jangan dipakai di production.
+Catatan: Next.js middleware/proxy sengaja tidak dipakai karena OpenNext Cloudflare saat ini tidak mendukung Node.js middleware output dari Next.js 16.
 
 ## Analytics
 
