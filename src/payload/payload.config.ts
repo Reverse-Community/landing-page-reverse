@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { sqliteD1Adapter } from "@payloadcms/db-d1-sqlite";
-import { r2Storage } from "@payloadcms/storage-r2";
 import { buildConfig } from "payload";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { GetPlatformProxyOptions } from "wrangler";
@@ -28,7 +27,7 @@ const isNextBuild = process.env.NEXT_PHASE === "phase-production-build";
 /**
  * Mode detection:
  * - VPS mode: set DATABASE_URL to a SQLite file path (e.g. "file:./reverse-community.db")
- * - Cloudflare mode: unset DATABASE_URL, uses D1 binding + R2 storage
+ * - Cloudflare mode: unset DATABASE_URL, uses D1 binding (no Payload media R2)
  */
 const databaseUrl = process.env.DATABASE_URL;
 
@@ -62,7 +61,7 @@ const cloudflareLogger = {
 } as any;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// Create a mock D1/R2 binding for build time when Cloudflare is unavailable
+// Create a mock D1 binding for build time when Cloudflare is unavailable
 function createMockD1(): D1Database {
   return {
     prepare: () => ({
@@ -78,23 +77,12 @@ function createMockD1(): D1Database {
   } as unknown as D1Database;
 }
 
-function createMockR2(): R2Bucket {
-  return {
-    put: async () => {},
-    get: async () => null,
-    delete: async () => {},
-    head: async () => null,
-    list: async () => ({ objects: [], truncated: false, delimitedPrefixes: [] })
-  } as unknown as R2Bucket;
-}
-
 async function getCloudflareBindings(): Promise<{ env: any }> {
   // During Next.js build, Cloudflare bindings aren't available — use mocks
   if (isNextBuild) {
     return {
       env: {
-        D1: createMockD1(),
-        R2: createMockR2()
+        D1: createMockD1()
       }
     };
   }
@@ -135,7 +123,6 @@ const sharedConfig = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let db: any;
-let cloudflarePlugins: any[] = [];
 let cloudflareLoggerConfig: any = undefined;
 
 if (databaseUrl) {
@@ -152,27 +139,16 @@ if (databaseUrl) {
   });
   // No R2 storage — Media collection uses local staticDir (public/uploads/)
 } else {
-  // Cloudflare mode: D1 binding + R2 storage
+  // Cloudflare mode: D1 binding only (no Payload media R2)
   const cloudflare = await getCloudflareBindings();
   db = sqliteD1Adapter({
     binding: cloudflare.env.D1
   });
-  cloudflarePlugins = [
-    r2Storage({
-      bucket: cloudflare.env.R2,
-      collections: {
-        media: {
-          prefix: "media"
-        }
-      }
-    })
-  ];
   cloudflareLoggerConfig = isProduction ? cloudflareLogger : undefined;
 }
 
 export default buildConfig({
   ...sharedConfig,
   db,
-  plugins: cloudflarePlugins,
   logger: cloudflareLoggerConfig
 });

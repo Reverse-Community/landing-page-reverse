@@ -10,7 +10,7 @@ Landing page dan brand showcase untuk **Reverse Community** — komunitas campur
 - **Payload CMS 3** — dual-mode database:
   - **VPS/Node.js:** `@payloadcms/db-sqlite` (SQLite file via `DATABASE_URL`)
   - **Cloudflare Workers:** `@payloadcms/db-d1-sqlite` (D1 binding)
-- **Storage:** local `public/uploads/` (VPS) atau **R2** (Cloudflare)
+- **Storage:** local `public/uploads/` untuk VPS; Cloudflare mode tidak memakai Payload media upload R2 (gunakan asset static/external URL)
 - **Discord Widget API** untuk live online count
 - **Docker Compose + Caddy** untuk deploy VPS
 - **OpenNext Cloudflare** untuk deploy ke Cloudflare Workers
@@ -34,7 +34,7 @@ Proyek ini mendukung **dua mode deployment** yang dipilih otomatis dari environm
 | Mode | `DATABASE_URL` | Database | Storage | Deploy dengan |
 |------|---------------|----------|---------|--------------|
 | **VPS** (Node.js) | `file:./data.db` | SQLite file (`@payloadcms/db-sqlite`) | `public/uploads/` | `docker compose up -d --build` |
-| **Cloudflare** | tidak diset | D1 (`@payloadcms/db-d1-sqlite`) | R2 | `opennextjs-cloudflare build && wrangler deploy` |
+| **Cloudflare** | tidak diset | D1 (`@payloadcms/db-d1-sqlite`) | static assets/external media; R2 hanya untuk OpenNext cache | `opennextjs-cloudflare build && wrangler deploy` |
 
 > **Migration dari PostgreSQL:** Versi sebelumnya menggunakan PostgreSQL. Sekarang sudah migrasi penuh ke SQLite/D1. Jika masih memiliki data PostgreSQL, ekspor ke SQLite sebelum upgrade.
 
@@ -101,7 +101,7 @@ NEXT_PUBLIC_UMAMI_SCRIPT_URL=
 NEXT_PUBLIC_UMAMI_WEBSITE_ID=
 ```
 
-> **Catatan:** Database (D1), storage (R2), dan KV dikonfigurasi via binding di `wrangler.jsonc`, bukan `.env`. Jalankan `npm run cf-typegen` setelah mengubah binding.
+> **Catatan:** Database (D1), KV, dan R2 cache OpenNext dikonfigurasi via binding di `wrangler.jsonc`, bukan `.env`. Payload media upload R2 sengaja tidak dipakai. Jalankan `npm run cf-typegen` setelah mengubah binding.
 
 ## VPS Docker deploy
 
@@ -151,7 +151,7 @@ Ini akan:
 
 - Akun Cloudflare dengan domain `reverse.my.id`
 - Wrangler CLI terinstall (`npm install -g wrangler` atau via `npx`)
-- D1 database + R2 bucket sudah dibuat (lihat wrangler.jsonc)
+- D1 database + KV namespace + R2 bucket cache sudah dibuat (lihat wrangler.jsonc)
 
 ### Setup Cloudflare resources
 
@@ -160,18 +160,20 @@ Ini akan:
 npx wrangler login
 
 # Buat D1 database (sekali saja)
-npx wrangler d1 create home-reverse-community-db
+npx wrangler d1 create reverse-community-db
 
-# Buat R2 bucket untuk media (sekali saja)
-npx wrangler r2 bucket create home-reverse-community-media
-npx wrangler r2 bucket create home-reverse-community-cache
+# Buat KV namespace untuk heartbeat/snapshot (sekali saja)
+npx wrangler kv namespace create REVERSE_KV
+
+# Buat R2 bucket hanya untuk OpenNext cache (sekali saja)
+npx wrangler r2 bucket create reverse-community-cache
 
 # Update binding IDs di wrangler.jsonc dengan hasil output di atas
 # lalu regenerate types:
 npm run cf-typegen
 ```
 
-> **Catatan:** Binding IDs yang ada di `wrangler.jsonc` saat ini adalah placeholder. Ganti dengan ID asli dari hasil `wrangler d1 create` dan `wrangler r2 bucket create`.
+> **Catatan:** Binding IDs di `wrangler.jsonc` harus memakai ID asli dari `wrangler d1 create` dan `wrangler kv namespace create`. R2 cache cukup memakai nama bucket.
 
 ### Deploy
 

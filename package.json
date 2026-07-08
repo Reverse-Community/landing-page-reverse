@@ -25,7 +25,6 @@
     "@payloadcms/db-sqlite": "^3.85.2",
     "@payloadcms/graphql": "^3.85.2",
     "@payloadcms/next": "^3.85.2",
-    "@payloadcms/storage-r2": "^3.85.2",
     "@payloadcms/translations": "^3.85.2",
     "@payloadcms/ui": "^3.85.2",
     "cli-color": "^2.0.4",
