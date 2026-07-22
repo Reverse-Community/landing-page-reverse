@@ -2,10 +2,6 @@
 
 function handler(verb: "GET" | "POST" | "PATCH" | "DELETE" | "OPTIONS") {
   return async (request: Request, props: { params: Promise<{ slug: string[] }> }) => {
-    if (!process.env.DATABASE_URL) {
-      return new Response("CMS API tidak tersedia di Cloudflare lean mode.", { status: 503 });
-    }
-
     const [{ default: config }, routes] = await Promise.all([
       import("@payload-config"),
       import("@payloadcms/next/routes")

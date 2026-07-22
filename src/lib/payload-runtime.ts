@@ -1,6 +1,6 @@
 type RuntimeImport = (specifier: string) => Promise<Record<string, any>>;
 
-const importRuntime = new Function("specifier", "return import(specifier)") as RuntimeImport;
+const importRuntime = (specifier: string) => eval(`import('${specifier}')`) as Promise<Record<string, any>>;
 
 export async function getCmsPayload() {
   const [{ default: config }, { getPayload }] = await Promise.all([importRuntime("@payload-config"), importRuntime("payload")]);

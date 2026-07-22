@@ -125,27 +125,12 @@ const sharedConfig = {
 let db: any;
 let cloudflareLoggerConfig: any = undefined;
 
-if (databaseUrl) {
-  // VPS mode: SQLite file via @payloadcms/db-sqlite.
-  // Keep this import fully opaque so Cloudflare/OpenNext does not bundle @libsql/client.
-  const importRuntime = new Function("specifier", "return import(specifier)") as (
-    specifier: string
-  ) => Promise<typeof import("@payloadcms/db-sqlite")>;
-  const { sqliteAdapter } = await importRuntime("@payloadcms/db-sqlite");
-  db = sqliteAdapter({
-    client: {
-      url: databaseUrl
-    }
-  });
-  // No R2 storage — Media collection uses local staticDir (public/uploads/)
-} else {
-  // Cloudflare mode: D1 binding only (no Payload media R2)
-  const cloudflare = await getCloudflareBindings();
-  db = sqliteD1Adapter({
-    binding: cloudflare.env.D1
-  });
-  cloudflareLoggerConfig = isProduction ? cloudflareLogger : undefined;
-}
+// Force D1 for deployment
+const cloudflare = await getCloudflareBindings();
+cloudflareLoggerConfig = isProduction ? cloudflareLogger : undefined;
+db = sqliteD1Adapter({
+  binding: cloudflare.env.D1 || createMockD1()
+});
 
 export default buildConfig({
   ...sharedConfig,

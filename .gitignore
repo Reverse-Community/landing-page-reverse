@@ -13,3 +13,5 @@ payload-types.ts
 .sisyphus
 .playwright-mcp
 .tmp
+.open-next
+.wrangler
